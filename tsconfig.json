@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    // Obliga a definir el tipo de modulo que se esta utilizando.
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {}
+  },
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
+}
