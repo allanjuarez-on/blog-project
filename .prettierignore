@@ -1,0 +1,10 @@
+.git/
+node_modules/
+dist/
+.astro/
+.vscode/
+package-lock.json
+package.json
+.gitignore
+.env
+.env.*
