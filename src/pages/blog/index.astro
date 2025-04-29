@@ -1,0 +1,59 @@
+---
+import { getCollection, getEntry, getEntries } from 'astro:content'
+import BlogLayout from '@layouts/BlogLayout.astro'
+
+// En astro existen dos maneras de recuperar collections getCOllections y getEntry
+const collections = await getCollection('blog')
+console.log(collections)
+
+// const userOne = await getEntry('author', 'allan')
+// console.log(userOne)
+
+// Recuperar un elemento de una colección; puede ser de tipo: content o data.
+// NOTA: Si un elemento de tipo "content" se modifica por un slug personalizado este en automatico pierde su referencia de su nombre de archivo; por lo tanto, debe ponerse el mismo nombre personalizado al buscarlo.
+const post = await getEntry('blog', 'custom-slug-expojs-tutorial-2025')
+// console.log(post)
+
+// Recuperar datos referenciados.
+const author = await getEntry(post.data.author)
+// console.log(author || 'No author')
+
+// Recuperar varios datos referenciados.
+const relatedPosts = await getEntries(post.data.relatedPosts)
+// console.log(relatedPosts || 'No related posts')
+---
+
+<BlogLayout>
+  <section>
+    <div class="bg-gray-800">
+      <h2 class="text-2xl">Blog.</h2>
+      {
+        collections && collections.map((post) => {
+          return (
+            <article>
+              <h2>{post.data.title}</h2>
+              <span>{`@${author.data.nickname}`}</span>
+            </article>
+          )
+        })
+      }
+    </div>
+    <div class="bg-gray-900">
+      <h4>
+        Related Posts
+      </h4>
+      <div>
+        {
+          relatedPosts && relatedPosts.map((post) => {
+            return (
+              <article>
+                <h2>{post.data.title}</h2>
+                <span>{`@${author.data.nickname}`}</span>
+              </article>
+            )
+          })
+        }
+      </div>
+    </div>
+  </section>
+</BlogLayout>
