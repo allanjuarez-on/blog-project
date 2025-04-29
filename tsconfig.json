@@ -5,7 +5,10 @@
     // Obliga a definir el tipo de modulo que se esta utilizando.
     "verbatimModuleSyntax": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@layouts/*": ["src/layouts/*"],
+      "@components/*": ["src/components/*"]
+    }
   },
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
