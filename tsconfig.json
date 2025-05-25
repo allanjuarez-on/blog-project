@@ -7,7 +7,11 @@
     "baseUrl": ".",
     "paths": {
       "@layouts/*": ["src/layouts/*"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@schemas/*": ["src/schemas/*"],
+      "@routes/*": ["src/routes/*"],
+      "@utils/*": ["src/utils/*"],
+      "@custom-types/*": ["src/types/*"],
     }
   },
   "extends": "astro/tsconfigs/strict",

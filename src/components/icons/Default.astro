@@ -1,0 +1,28 @@
+---
+interface Props {
+  class: string | null | undefined
+}
+
+const { class: className, ...props } = Astro.props
+---
+
+<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' class:list={[className]} {...props}>
+  <g id='Default'>
+    <mask
+      id='mask0_308_2'
+      style='mask-type:alpha'
+      maskUnits='userSpaceOnUse'
+      x='0'
+      y='0'
+      width='24'
+      height='24'>
+      <rect id='Bounding box' width='24' height='24' fill='#D9D9D9'></rect>
+    </mask>
+    <g mask='url(#mask0_308_2)'>
+      <path
+        id='Default_2'
+        d='M6.4 19H5L10.6 12L5 5H6.4H12H17.6H19L13.4 12L19 19H17.6H12H6.4Z'
+        fill='#F8F9FA'></path>
+    </g>
+  </g>
+</svg>

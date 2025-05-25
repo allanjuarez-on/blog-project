@@ -1,0 +1,29 @@
+---
+import Link from './Link.astro'
+import type { PrimitiveLink } from '@custom-types/global'
+
+interface Props {
+  routes: Partial<PrimitiveLink>[]
+}
+
+const { routes } = Astro.props
+---
+
+<section>
+  <slot name='section-name' />
+  <ul>
+    {
+      routes &&
+        routes.length >= 1 &&
+        routes.map(route => {
+          return (
+            <li>
+              <Link type={route.type} href={route.href}>
+                {route.label}
+              </Link>
+            </li>
+          )
+        })
+    }
+  </ul>
+</section>
