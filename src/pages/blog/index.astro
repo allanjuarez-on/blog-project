@@ -4,7 +4,7 @@ import BlogLayout from '@layouts/BlogLayout.astro'
 
 // En astro existen dos maneras de recuperar collections getCOllections y getEntry
 const collections = await getCollection('blog')
-console.log(collections)
+// console.log(collections)
 
 // const userOne = await getEntry('author', 'allan')
 // console.log(userOne)
@@ -19,14 +19,14 @@ const author = await getEntry(post.data.author)
 // console.log(author || 'No author')
 
 // Recuperar varios datos referenciados.
-const relatedPosts = await getEntries(post.data.relatedPosts)
+// const relatedPosts = await getEntries(post.data.relatedPosts)
 // console.log(relatedPosts || 'No related posts')
 ---
 
 <BlogLayout>
   <section>
-    <div class="bg-gray-800">
-      <h2 class="text-2xl">Blog.</h2>
+    <h2 class="text-4xl">Blog.</h2>
+    <div>
       {
         collections && collections.map((post) => {
           return (
@@ -37,23 +37,6 @@ const relatedPosts = await getEntries(post.data.relatedPosts)
           )
         })
       }
-    </div>
-    <div class="bg-gray-900">
-      <h4>
-        Related Posts
-      </h4>
-      <div>
-        {
-          relatedPosts && relatedPosts.map((post) => {
-            return (
-              <article>
-                <h2>{post.data.title}</h2>
-                <span>{`@${author.data.nickname}`}</span>
-              </article>
-            )
-          })
-        }
-      </div>
     </div>
   </section>
 </BlogLayout>

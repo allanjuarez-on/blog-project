@@ -1,0 +1,28 @@
+---
+import LinkList from '@components/LinkList.astro'
+import { footerLocalLinks, footerExternalLinks } from '@routes/paths'
+import Link from './Link.astro'
+
+interface Props {
+  class: string | null | undefined
+}
+
+const { class: className, ...props } = Astro.props
+---
+
+<footer class:list={[className]} {...props}>
+  <div>
+    <LinkList routes={footerLocalLinks}>
+      <h5 slot='section-name'>Mapa del sitio</h5>
+    </LinkList>
+    <LinkList routes={footerExternalLinks}>
+      <h5 slot='section-name'>Redes sociales</h5>
+    </LinkList>
+  </div>
+  <div>
+    <span>Construido por</span>
+    <Link href='/' ctx='_blank'>
+      allanjuarez
+    </Link>
+  </div>
+</footer>

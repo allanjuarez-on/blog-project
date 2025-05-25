@@ -42,9 +42,9 @@ export default defineConfig([
 
   // Javascript
   {
-    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'], 
-    plugins: { js }, 
-    extends: ['js/recommended'] 
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    plugins: { js },
+    extends: ['js/recommended'],
   },
 
   // Typescript
@@ -62,7 +62,8 @@ export default defineConfig([
       tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   }),
 
@@ -86,15 +87,15 @@ export default defineConfig([
   // React A11y
   // pluginJsxA11Y.flatConfigs.recommended,
   {
-    files: ["**/*.{js,jsx,tsx}"],
+    files: ['**/*.{js,jsx,tsx}'],
     plugins: { 'jsx-a11y': pluginJsxA11Y },
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true 
-        } 
-      } 
-    } 
+          jsx: true,
+        },
+      },
+    },
   },
 
   // JSON
@@ -118,7 +119,7 @@ export default defineConfig([
     language: 'markdown/gfm',
     extends: ['markdown/recommended'],
   },
-  
+
   // MDX
   {
     files: ['**/*.mdx'],

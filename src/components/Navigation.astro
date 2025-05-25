@@ -1,0 +1,27 @@
+---
+import Edge from '@components/Edge.astro'
+import MenuList from '@components/MenuList.astro'
+import ButtonMenu from './ButtonMenu.astro'
+import type { MainMenuLink } from '@custom-types/global'
+
+interface Props {
+  routes: MainMenuLink[]
+}
+
+const { routes } = Astro.props
+---
+
+<nav class='bg-blue-700'>
+  <!-- Visible -->
+  <Edge>
+    <div>
+      <ButtonMenu />
+    </div>
+  </Edge>
+  <!-- Hidden -->
+  <Edge>
+    <div>
+      <MenuList routes={routes} />
+    </div>
+  </Edge>
+</nav>

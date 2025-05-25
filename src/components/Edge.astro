@@ -1,0 +1,49 @@
+---
+interface Props {
+  class?: string | null | undefined
+}
+
+const { class: className, ...props } = Astro.props
+---
+
+<!-- Migrar CSS a TailwindCSS -->
+<div class:list={['border-1 border-solid border-gray-600 overflow-hidden select-none', className]} {...props}>
+  <slot />
+</div>
+
+<!-- <style>
+  .edge {
+    overflow: hidden;
+    user-select: none;
+  }
+
+  div[data-edge-top] {
+    border-top: 1px solid var(--stroke-default);
+  }
+
+  div[data-edge-right] {
+    border-right: 1px solid var(--stroke-default);
+  }
+
+  div[data-edge-bottom] {
+    border-bottom: 1px solid var(--stroke-default);
+  }
+
+  div[data-edge-left] {
+    border-left: 1px solid var(--stroke-default);
+  }
+
+  div[data-edge-all] {
+    border: 1px solid var(--stroke-default);
+  }
+
+  div[data-edge-none] {
+    border: none;
+  }
+
+  @media (width >= 1024px) {
+    .edge:hover:not(:is([edge-hover-disabled])) {
+      border-color: var(--stroke-hover);
+    }
+  }
+</style> -->

@@ -1,5 +1,10 @@
 ---
+import Footer from '@components/Footer.astro' 
 import '../styles/global.css'
+import Navigation from '@components/Navigation.astro'
+import { mainMenuLinks } from '@routes/paths'
+
+const pageTitle = 'allanjuarez.com | blog'
 ---
 
 <html lang='es'>
@@ -8,11 +13,13 @@ import '../styles/global.css'
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
-    <title>Blog</title>
+    <title>{pageTitle}</title>
   </head>
-  <body class='bg-black'>
+  <body>
+    <Navigation routes={mainMenuLinks}/>
     <main>
       <slot />
     </main>
+    <Footer class="bg-blue-700" />
   </body>
 </html>

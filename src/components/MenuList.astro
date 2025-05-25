@@ -1,0 +1,39 @@
+---
+import Link from '@components/Link.astro'
+import type { MainMenuLink } from '@custom-types/global'
+
+interface Props {
+  routes: MainMenuLink[]
+}
+
+const { routes } = Astro.props
+---
+
+<div>
+  {
+    routes.map(link => {
+      const Banner = link.banner
+
+      if (!Banner) {
+        return <span>No existe un banner disponible.</span>
+      }
+
+      return <Banner />
+    })
+  }
+</div>
+<ul>
+  {routes.length === 0 && <span>No hay links disponibles</span>}
+
+  {
+    routes.map(link => {
+      return (
+        <li>
+          <Link type={link.type} href={link.href}>
+            {link.label}
+          </Link>
+        </li>
+      )
+    })
+  }
+</ul>
