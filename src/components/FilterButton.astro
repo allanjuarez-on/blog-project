@@ -1,0 +1,11 @@
+---
+interface Props {
+  class?: string | null | undefined
+}
+
+const { class: className, ...props } = Astro.props
+---
+
+<button class:list={[className]} {...props}>
+    <slot />
+</button>

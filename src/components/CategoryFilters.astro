@@ -1,0 +1,28 @@
+---
+import FilterButton from './FilterButton.astro'
+
+interface Props {
+  categories: {
+    id: number
+    name: string
+  }[]
+  class?: string | null | undefined
+}
+
+const { categories, class: className, ...props } = Astro.props
+---
+
+<div class:list={[className]} {...props}>
+  {
+    categories.map(categories => {
+      // with(index, newElement) | No mutable
+      // Metodo de arrays que retorna una copia exacta del array original solo modificando un indice dado.
+      const categoryDisplayName = categories.name
+        .split('')
+        .with(0, categories.name[0].toUpperCase())
+        .join('')
+
+      return categories.name === 'all' ? <FilterButton>Lo último</FilterButton> : <FilterButton>{categoryDisplayName}</FilterButton>
+    })
+  }
+</div>

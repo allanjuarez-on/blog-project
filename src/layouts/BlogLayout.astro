@@ -1,10 +1,14 @@
 ---
 import Footer from '@components/Footer.astro' 
-import '../styles/global.css'
 import Navigation from '@components/Navigation.astro'
 import { mainMenuLinks } from '@routes/paths'
+import '../styles/global.css'
 
-const pageTitle = 'allanjuarez.com | blog'
+interface Props {
+  pageTitle: string
+}
+
+const { pageTitle } = Astro.props
 ---
 
 <html lang='es'>
