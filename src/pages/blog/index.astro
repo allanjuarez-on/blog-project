@@ -1,41 +1,61 @@
 ---
-import { getCollection, getEntry, getEntries } from 'astro:content'
+import { getCollection, getEntries } from 'astro:content'
 import BlogLayout from '@layouts/BlogLayout.astro'
+import Link from '@components/Link.astro'
+import CategoryFilter from '@components/CategoryFilters.astro'
+import CardArticle from '@components/CardArticle.astro'
+import WithoutContent from '@components/WithoutContent.astro'
 
-// En astro existen dos maneras de recuperar collections getCOllections y getEntry
-const collections = await getCollection('blog')
-// console.log(collections)
+const pageTitle = 'allanjuarez.com | blog'
 
-// const userOne = await getEntry('author', 'allan')
-// console.log(userOne)
+// Las content collections de Astro permiten recuperar datos de tres maneras:
+// 1. getCollections() -> Obtiene una colección entera
+// 2. getEntry() -> Recupera un elemento de una colección.
+// 3. getEntries() -> Recupera uno o varios datos refenciados
+const categories = (await getCollection('categories')).map((raw) => raw.data)
 
-// Recuperar un elemento de una colección; puede ser de tipo: content o data.
-// NOTA: Si un elemento de tipo "content" se modifica por un slug personalizado este en automatico pierde su referencia de su nombre de archivo; por lo tanto, debe ponerse el mismo nombre personalizado al buscarlo.
-const post = await getEntry('blog', 'custom-slug-expojs-tutorial-2025')
-// console.log(post)
+async function getArticles() {
+  const rawArticles = await getCollection('articles')
+  const articles = rawArticles.map(async raw => {
+    const rawAuthors = await getEntries(raw.data.authors)
+    return {
+      id: raw.id,
+      data: {
+        ...raw.data,
+        authors: [...rawAuthors],
+      },
+    }
+  })
 
-// Recuperar datos referenciados.
-const author = await getEntry(post.data.author)
-// console.log(author || 'No author')
+  return Promise.allSettled(articles).then(results => results)
+}
 
-// Recuperar varios datos referenciados.
-// const relatedPosts = await getEntries(post.data.relatedPosts)
-// console.log(relatedPosts || 'No related posts')
+const allArticles = await getArticles()
+// const allArticles = (await getArticles()).map((art, _, arr) => {
+//   arr[0].status = 'rejected'
+//   return art
+// })
 ---
 
-<BlogLayout>
+<BlogLayout pageTitle={pageTitle}>
+  <div>
+    <CategoryFilter categories={categories} />
+  </div>
   <section>
-    <h2 class="text-4xl">Blog.</h2>
+    <h1>Category</h1>
     <div>
       {
-        collections && collections.map((post) => {
-          return (
-            <article>
-              <h2>{post.data.title}</h2>
-              <span>{`@${author.data.nickname}`}</span>
-            </article>
-          )
-        })
+        allArticles &&
+          allArticles.length !== 0 &&
+          allArticles.map(results => {
+            return results.status !== 'fulfilled' ? (
+              <WithoutContent />
+            ) : (
+              <Link type='local' href={`/article/${results.value.id}`}>
+                <CardArticle {...results.value.data} />
+              </Link>
+            )
+          })
       }
     </div>
   </section>

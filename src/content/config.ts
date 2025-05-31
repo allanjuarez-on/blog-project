@@ -1,49 +1,78 @@
-import { z, defineCollection, reference } from 'astro:content'
+import { file, glob } from 'astro/loaders'
+import { z, defineCollection, reference, type SchemaContext } from 'astro:content'
 
 // Astro utiliza Zod para verificar e implementar tipos con typescript.
 
-// SCHEMAS
+// CATEGORY COLLECTION
+const categorySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+const categories = defineCollection({
+  // type: 'data',
+  // file(path: string, options: {})
+  // El cargador file obtiene todos los datos de un documento json o yaml principalmente si de un array se trata
+  loader: file('./src/data/categories/categories.json'),
+  schema: categorySchema,
+})
+
+// AUTHOR COLLECTION
 const authorSchema = z.object({
   name: z.string(),
-  // nickname: z.enum(['allanjuarez', 'allanjuarez-on', 'allanjuarez-404']),
-  nickname: z.string(),
-  socialMedia: z.string().array(),
+  bio: z.string(),
+  nickname: z.string().optional(),
+  socialMedia: z.string().url().array(),
 })
 
-const authorProps = authorSchema.required({
-  name: true,
-  nickname: true,
+const authors = defineCollection({
+  // type: 'data',
+  // loader: file('./src/data/authors/authors.json'),
+  loader: glob({ pattern: '**/*.json', base: './src/data/authors' }),
+  schema: authorSchema,
 })
 
-const blogSchema = z.object({
-  title: z.string().max(60, { message: 'El titulo no debe ser mayor a 60 caracteres.' }),
-  author: reference('author'),
-  date: z.string().transform(str => new Date(str)),
-  category: z.string(),
-  heroImage: z.string().url(),
-  relatedPosts: z.array(reference('blog')),
-})
+// SchemaContext
+// Funcion que permite reutilizar schemas en diferentes contextos.
+const imageSchema = ({ image }: SchemaContext) => {
+  return z.object({
+    img: image(),
+    description: z.string(),
+  })
+}
 
-const blogProps = blogSchema.required({
-  title: true,
-  date: true,
-  category: true,
-})
-
-// COLLECTIONS
-const blog = defineCollection({
+// ARTICLE COLLECTION
+const articleSchema = ({ image }: SchemaContext) => {
+  return z
+    .object({
+      title: z.string().max(60, { message: 'El titulo no debe ser mayor a 60 caracteres.' }),
+      authors: z.array(reference('authors')),
+      date: z.string().transform(str => new Date(str)),
+      category: reference('categories'),
+      cover: imageSchema({ image }),
+      thumbnail: imageSchema({ image }),
+      relatedPosts: reference('posts').array(),
+    })
+    .required({
+      title: true,
+      authors: true,
+      date: true,
+      category: true,
+    })
+}
+const articles = defineCollection({
   // Cada vez que se define una coleccion con el tipo "content", astro en automatico genera un slug con el id del archivo.
-  type: 'content',
-  schema: blogProps,
-})
-
-const author = defineCollection({
-  type: 'data',
-  schema: authorProps,
+  // type: 'content',
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/articles',
+  }),
+  schema: articleSchema,
 })
 
 export const collections = {
   // El nombre de las colecciones exportadas debe coincidir con el del directorio src/content/**
-  blog,
-  author,
+  authors,
+  categories,
+  articles,
 }
