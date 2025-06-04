@@ -21,8 +21,63 @@ const { categories, class: className, ...props } = Astro.props
         .split('')
         .with(0, categories.name[0].toUpperCase())
         .join('')
-
-      return categories.name === 'all' ? <FilterButton>Lo último</FilterButton> : <FilterButton>{categoryDisplayName}</FilterButton>
+      return (
+        <FilterButton href={`?category=${categories.name}`} data-filter={categories.name}>
+          {categoryDisplayName}
+        </FilterButton>
+      )
     })
   }
 </div>
+
+<script>
+  function getNodes(selector = '') {
+    return document.querySelectorAll(selector)
+  }
+
+  function updateUrl(filters: NodeListOf<Element> | []): void {
+    if (filters.length === 0) return
+
+    filters?.forEach(node => {
+      // getAttribute(<attribute>)
+      // Retorna el valor de un atributo, si el atributo no existe retorna null.
+      const filterData = node.getAttribute('data-filter')
+
+      if (!filterData) return
+
+      node.addEventListener('click', e => {
+        // Previene el comportamiento "natural" del elemento html, en este caso el anchor no actualizara la pagína.
+        e.preventDefault()
+
+        const url = new URL(window.location)
+        // Obtiene el valor de un search param de la URL.
+        const currentFilter = url.searchParams.get('category')
+
+        if (filterData === currentFilter) {
+          url.searchParams.delete('category')
+          window.history.pushState({}, '', url)
+
+          window.dispatchEvent(
+            new CustomEvent('changeUrl', { detail: { payload: url.searchParams.get('category') } }),
+          )
+
+          return  
+        } else {
+          url.searchParams.set('category', filterData)
+
+          // history.pushState(state, unused, url?)
+          // Metodo que permite agregar al historial de navegación una nueva entrada.
+          // url: es la nueva entrada que se agregara al navegador, debe ser del mismo origen si no genera una excepción, si no se agrega por defecto define la URL actual.
+          window.history.pushState({}, '', url)
+
+          window.dispatchEvent(
+            new CustomEvent('changeUrl', { detail: { payload: url.searchParams.get('category') } }),
+          )
+        }
+      })
+    })
+  }
+
+  const nodes = getNodes('a[data-filter]')
+  updateUrl(nodes)
+</script>

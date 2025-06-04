@@ -3,7 +3,7 @@ title: Javascript clousures
 authors:
   - allanjuarez
 date: July/07/11
-category: JavaScript
+category: NodeJS
 cover:
   img: src/assets/default-image.svg
   description: Default
