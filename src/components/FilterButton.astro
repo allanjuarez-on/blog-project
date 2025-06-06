@@ -1,11 +1,15 @@
 ---
+import Link from './Link.astro'
+
 interface Props {
+  href: string
+  filterName: string
   class?: string | null | undefined
 }
 
-const { class: className, ...props } = Astro.props
+const { href, filterName, class: className, ...props } = Astro.props
 ---
 
-<button class:list={[className]} {...props}>
-    <slot />
-</button>
+<Link type='local' href={href} {...props}>
+  {filterName}
+</Link>

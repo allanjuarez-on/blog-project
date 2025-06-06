@@ -1,17 +1,16 @@
 ---
-title: Javascript clousures
+slug: css-custom-properties
+title: CSS Custom Properties
 authors:
   - allanjuarez
-date: July/07/11
-category: NodeJS
+date: Dec/06/2025
+category: CSS
 cover:
   img: src/assets/default-image.svg
   description: Default
 thumbnail:
   img: src/assets/default-image.svg
   description: Default
-relatedPosts:
-  - post-1
 ---
 
-# Javascript clousures
+# NextJS 15 API

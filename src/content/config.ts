@@ -43,22 +43,15 @@ const imageSchema = ({ image }: SchemaContext) => {
 
 // ARTICLE COLLECTION
 const articleSchema = ({ image }: SchemaContext) => {
-  return z
-    .object({
-      title: z.string().max(60, { message: 'El titulo no debe ser mayor a 60 caracteres.' }),
-      authors: z.array(reference('authors')),
-      date: z.string().transform(str => new Date(str)),
-      category: reference('categories'),
-      cover: imageSchema({ image }),
-      thumbnail: imageSchema({ image }),
-      relatedPosts: reference('posts').array(),
-    })
-    .required({
-      title: true,
-      authors: true,
-      date: true,
-      category: true,
-    })
+  return z.object({
+    title: z.string().max(60, { message: 'El titulo no debe ser mayor a 60 caracteres.' }),
+    authors: z.array(reference('authors')),
+    date: z.string().transform(str => new Date(str)),
+    category: reference('categories'),
+    cover: imageSchema({ image }),
+    thumbnail: imageSchema({ image }),
+    relatedPosts: reference('posts').array().optional(),
+  })
 }
 const articles = defineCollection({
   // Cada vez que se define una coleccion con el tipo "content", astro en automatico genera un slug con el id del archivo.
