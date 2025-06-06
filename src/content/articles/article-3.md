@@ -1,9 +1,9 @@
 ---
-title: Javascript clousures
+title: NextJS 15 Middlewares
 authors:
-  - allanjuarez
-date: July/07/11
-category: NodeJS
+  - astronave
+date: Ago/02/2025
+category: NextJS
 cover:
   img: src/assets/default-image.svg
   description: Default
@@ -11,7 +11,7 @@ thumbnail:
   img: src/assets/default-image.svg
   description: Default
 relatedPosts:
-  - post-1
+  - post-4
 ---
 
-# Javascript clousures
+# NextJS 15 Middlewares

@@ -31,10 +31,6 @@ async function getArticles() {
 }
 
 const allArticles = await getArticles()
-// const allArticles = (await getArticles()).map((art, _, arr) => {
-//   arr[0].status = 'rejected'
-//   return art
-// })
 ---
 
 <BlogLayout pageTitle={pageTitle}>
@@ -42,14 +38,13 @@ const allArticles = await getArticles()
     <CategoryFilter categories={categories} />
   </div>
   <section>
-    <h1 id="PageHeading">Lo último</h1>
     <div>
       {
         allArticles &&
           allArticles.length !== 0 &&
           allArticles.map(results => {
             return results.status !== 'fulfilled' ? (
-              <WithoutContent />
+              <WithoutContent data-card-category={'no-content'} />
             ) : (
               <Link
                 type='local'
@@ -75,80 +70,99 @@ const allArticles = await getArticles()
 </style>
 
 <script>
+  // La etiqueta "script" soporta completamente typescript.
   interface UrlDataEvent {
     payload: string | null
   }
 
-  function checkCurrentFilter() {
+  enum CardState {
+    HIDE = 'hide',
+    SHOW = 'show'
+  }
+
+  // Por defecto las etiquetas script en Astro esperan a que sea cargue todo el HTML, de esta manera no se necesita del evento "load"
+  function markActiveCardElementsByURL() {
     const currentFilter = new URL(window.location).searchParams.get('category')
-    const heading = document.querySelector('#PageHeading')
-    const cards = document.querySelectorAll('a[data-card-category]')
-
-    if(!currentFilter || currentFilter === 'latest') {
-      heading.textContent = 'Lo último'
-    }
-
-    if(currentFilter && currentFilter !== 'latest') {
-      heading.textContent = currentFilter
-    }
+    const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
+    
+    // Next version:
+    // const heading = document.querySelector('#PageHeading')
+    // updatePrimaryHeading(heading, currentFilter)
 
     cards.forEach(node => {
       const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
 
-      if (!currentFilter || currentFilter === 'latest') {
-        node.classList.add('show')
+      if (!currentFilter || currentFilter === 'latest' || cardCategory === 'no-content') {
+        node.classList.add(CardState.SHOW)
         return
       }
 
       if (currentFilter === cardCategory) {
-        node.classList.add('show')
+        node.classList.add(CardState.SHOW)
         return
       }
 
       if (currentFilter !== cardCategory) {
-        node.classList.add('hide')
+        node.classList.add(CardState.HIDE)
         return
       }
     })
   }
-
-  checkCurrentFilter()
 
   function updateUIByPayload(currentFilter: string | null) {
-    const heading = document.querySelector('#PageHeading')
-    const cards = document.querySelectorAll('a[data-card-category]')
-
-    if(!currentFilter || currentFilter === 'latest') {
-      heading.textContent = 'Lo último'
-    }
-
-    if(currentFilter && currentFilter !== 'latest') {
-      heading.textContent = currentFilter
-    }
-
+    const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
+    
+    // Next version:
+    // const heading = document.querySelector('#PageHeading')
+    // updatePrimaryHeading(heading, currentFilter)
+    
     cards.forEach(node => {
       const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
 
+      if(!currentFilter && currentFilter !== 'latest' && cardCategory === 'no-content') {
+        node.classList.replace(CardState.SHOW, CardState.HIDE)
+        return
+      }
+
       if (!currentFilter || currentFilter === 'latest') {
-        node.classList.replace('hide', 'show')
+        node.classList.replace(CardState.HIDE, CardState.SHOW)
         return
       }
 
       if (currentFilter === cardCategory) {
-        node.classList.replace('hide', 'show')
+        node.classList.replace(CardState.HIDE, CardState.SHOW)
         return
       }
 
       if (currentFilter !== cardCategory) {
-        node.classList.replace('show', 'hide')
+        node.classList.replace(CardState.SHOW, CardState.HIDE)
         return
       }
     })
   }
+
+  markActiveCardElementsByURL();
 
   window.addEventListener('changeUrl', e => {
     // Type assertion or Type cast
     const changeUrlEvent = e as CustomEvent<UrlDataEvent>
     updateUIByPayload(changeUrlEvent.detail.payload)
   })
+
+  // Next version:
+  // function updatePrimaryHeading(node: Element | null, filter: string | null) {
+  //   if(!node || !filter) {
+  //     return
+  //   }
+
+  //   const displayNameCategory = filter.split('').map((letter) => letter.toUpperCase()).join('')
+
+  //   if(!filter || filter === 'latest') {
+  //     node.textContent = 'LO ÚLTIMO'
+  //   }
+
+  //   if(filter && filter !== 'latest') {
+  //     node.textContent = displayNameCategory
+  //   }
+  // }
 </script>

@@ -3,12 +3,13 @@ import Link from './Link.astro'
 
 interface Props {
   href: string
+  filterName: string
   class?: string | null | undefined
 }
 
-const { href, class: className, ...props } = Astro.props
+const { href, filterName, class: className, ...props } = Astro.props
 ---
 
-<Link href={href} {...props}>
-  <slot />
-<Link>
+<Link type='local' href={href} {...props}>
+  {filterName}
+</Link>

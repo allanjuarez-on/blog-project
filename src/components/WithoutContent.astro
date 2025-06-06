@@ -1,9 +1,11 @@
 ---
 import { Image } from 'astro:assets'
 import defaultImage from '../assets/default-image.svg'
+
+const { ...props } = Astro.props
 ---
 
-<div>
+<div {...props}>
   <Image src={defaultImage} alt={'No description'} />
   <div>
     <span>Sin contenido disponible.</span>

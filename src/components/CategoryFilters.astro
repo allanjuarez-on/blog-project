@@ -17,24 +17,19 @@ const { categories, class: className, ...props } = Astro.props
     categories.map(categories => {
       // with(index, newElement) | No mutable
       // Metodo de arrays que retorna una copia exacta del array original solo modificando un indice dado.
+      // .with(0, categories.name[0].toUpperCase())
       const categoryDisplayName = categories.name
         .split('')
-        .with(0, categories.name[0].toUpperCase())
+        .map((letter) => letter.toUpperCase())
         .join('')
       return (
-        <FilterButton href={`?category=${categories.name}`} data-filter={categories.name}>
-          {categoryDisplayName}
-        </FilterButton>
+        <FilterButton href={`?category=${categories.name}`} filterName={categoryDisplayName} data-filter={categories.name} />
       )
     })
   }
 </div>
 
 <script>
-  function getNodes(selector = '') {
-    return document.querySelectorAll(selector)
-  }
-
   function updateUrl(filters: NodeListOf<Element> | []): void {
     if (filters.length === 0) return
 
@@ -78,6 +73,5 @@ const { categories, class: className, ...props } = Astro.props
     })
   }
 
-  const nodes = getNodes('a[data-filter]')
-  updateUrl(nodes)
+  updateUrl(document.querySelectorAll('a[data-filter]'))
 </script>
