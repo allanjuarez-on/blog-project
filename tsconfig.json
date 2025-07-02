@@ -8,10 +8,12 @@
     "paths": {
       "@layouts/*": ["src/layouts/*"],
       "@components/*": ["src/components/*"],
+      "@lib/*": ["src/lib/*"],
       "@schemas/*": ["src/schemas/*"],
       "@routes/*": ["src/routes/*"],
       "@utils/*": ["src/utils/*"],
       "@custom-types/*": ["src/types/*"],
+      "@assets/*": ["src/assets/*"],
     }
   },
   "extends": "astro/tsconfigs/strict",

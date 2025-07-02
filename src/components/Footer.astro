@@ -4,25 +4,43 @@ import { footerLocalLinks, footerExternalLinks } from '@routes/paths'
 import Link from './Link.astro'
 
 interface Props {
-  class: string | null | undefined
+  class?: string | null | undefined
 }
 
 const { class: className, ...props } = Astro.props
 ---
 
-<footer class:list={[className]} {...props}>
-  <div>
-    <LinkList routes={footerLocalLinks}>
-      <h5 slot='section-name'>Mapa del sitio</h5>
+<footer id="PrimaryFooter" class:list={['px-4 pt-32 pb-4 flex flex-col gap-32', className]} {...props}>
+  <div class="flex flex-col gap-16">
+    <LinkList id="SiteMap" routes={footerLocalLinks}>
+      <h5 slot='section-name' class="text-[1.25rem] font-medium mb-5">Mapa del sitio</h5>
     </LinkList>
     <LinkList routes={footerExternalLinks}>
-      <h5 slot='section-name'>Redes sociales</h5>
+      <h5 slot='section-name' class="text-[1.25rem] font-medium mb-5">Redes sociales</h5>
     </LinkList>
   </div>
-  <div>
+  <div class="flex gap-[1ch] justify-center font-mono text-[0.75rem]">
     <span>Construido por</span>
     <Link href='/' ctx='_blank'>
       allanjuarez
     </Link>
   </div>
 </footer>
+
+<script>
+  import { markActiveElement } from "@lib/dom/dom"
+
+  const siteMap = document.querySelector('#SiteMap')
+  const linkList = siteMap?.querySelectorAll('a[data-value]')
+
+  const createUrl = (new URL(window.location)).pathname.split('')
+  createUrl.shift()
+  const currentPathname = createUrl.join('')
+  
+  linkList?.forEach((link) => {
+    const dataLink = (link.dataset.value).toLowerCase()
+    const isActive = dataLink === currentPathname
+
+    markActiveElement(link, isActive)
+  })
+</script>

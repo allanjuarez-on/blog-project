@@ -1,26 +1,29 @@
 ---
-import Link from './Link.astro'
+import ObserverLink from './ObserverLink.astro'
 import type { PrimitiveLink } from '@custom-types/global'
 
 interface Props {
   routes: Partial<PrimitiveLink>[]
 }
 
-const { routes } = Astro.props
+const { routes, ...props } = Astro.props
 ---
 
-<section>
+<section {...props}>
   <slot name='section-name' />
-  <ul>
+  <ul class='flex flex-col gap-4'>
     {
       routes &&
         routes.length >= 1 &&
         routes.map(route => {
           return (
             <li>
-              <Link type={route.type} href={route.href}>
-                {route.label}
-              </Link>
+              <ObserverLink
+                ref={route.href}
+                label={route.label}
+                class='text-gray-50/50'
+                data-value={route.label}
+              />
             </li>
           )
         })

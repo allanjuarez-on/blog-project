@@ -1,27 +1,51 @@
 ---
-import Edge from '@components/Edge.astro'
-import MenuList from '@components/MenuList.astro'
-import ButtonMenu from './ButtonMenu.astro'
+import ButtonOpenMenu from './ButtonOpenMenu.astro'
+import Menu from './Menu.astro'
 import type { MainMenuLink } from '@custom-types/global'
 
 interface Props {
-  routes: MainMenuLink[]
+  links: MainMenuLink[]
+  class?: string | null | undefined
 }
 
-const { routes } = Astro.props
+const { links, class: className } = Astro.props
 ---
 
-<nav class='bg-blue-700'>
-  <!-- Visible -->
-  <Edge>
-    <div>
-      <ButtonMenu />
-    </div>
-  </Edge>
-  <!-- Hidden -->
-  <Edge>
-    <div>
-      <MenuList routes={routes} />
-    </div>
-  </Edge>
+<nav
+  id='PrimaryNavigation'
+  class:list={[
+    'sticky top-0 z-[9] py-8 px-6 flex-col bg-gray-1000/50 backdrop-blur-3xl transition-transform duration-200 ease-in-out',
+    className,
+  ]}>
+  <ButtonOpenMenu />
 </nav>
+<Menu links={links} />
+
+
+<script>
+  function updateNavClassByScroll() {
+    const navComponent = document.querySelector('#PrimaryNavigation')
+    const navComponentHeight = navComponent?.getBoundingClientRect()
+    const height = navComponentHeight?.height || 88
+    let lastScroll = 0
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY
+
+      // Baja
+      if (currentScroll > lastScroll && currentScroll > height) {
+        navComponent?.classList.remove('translate-y-0')
+        navComponent?.classList.add('-translate-y-full')
+      }
+
+      // Sube
+      if (currentScroll < lastScroll) {
+        navComponent?.classList.replace('-translate-y-full', 'translate-y-0')
+      }
+
+      lastScroll = currentScroll
+    })
+  }
+
+  updateNavClassByScroll()
+</script>

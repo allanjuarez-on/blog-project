@@ -5,38 +5,35 @@ const modules: AstroModule = import.meta.glob('../components/icons/*.custom.astr
 
 export const mainMenuLinks: MainMenuLink[] = [
   {
-    type: 'local',
+    id: 'blog',
     href: '/blog',
     label: 'Blog',
-    banner: getBannerByName('Word', modules),
+    // banner: getBannerByName('Word', modules),
   },
   {
-    type: 'local',
-    href: '/me',
+    id: 'portfolio',
+    href: '/portfolio',
     label: 'Portfolio',
-    banner: getBannerByName('HighShot', modules),
+    // banner: getBannerByName('HighShot', modules),
   },
   {
-    type: 'local',
+    id: 'lets-talk',
     href: '/lets-talk',
     label: 'Hablemos',
-    banner: getBannerByName('HighShot', modules),
+    // banner: getBannerByName('HighShot', modules),
   },
 ]
 
-export const footerLocalLinks: Omit<PrimitiveLink, 'description' | 'ctx'>[] = [
+export const footerLocalLinks: Omit<PrimitiveLink, 'type' | 'description' | 'ctx'>[] = [
   {
-    type: 'local',
     href: '/blog',
     label: 'Blog',
   },
   {
-    type: 'local',
-    href: '/me',
+    href: '/portfolio',
     label: 'Portfolio',
   },
   {
-    type: 'local',
     href: '/lets-talk',
     label: 'Hablemos',
   },

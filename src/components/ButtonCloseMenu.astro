@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro'
+
+const { class: className, ...props } = Astro.props
+---
+
+<button id='ButtonCloseMenu' {...props}>
+  <Icon iconName='close' class:list={['cursor-pointer', className]} />
+</button>
+
+
+<script>
+  function closeMenu() {
+    const buttonOpenComponent = document.querySelector('#ButtonCloseMenu')
+    const menu = document.querySelector('#PrimaryMenu')
+    // const bannerList = menu?.querySelectorAll('[data-banner]')
+    const body = document.querySelector('body')
+
+    if (menu && body) {
+      buttonOpenComponent?.addEventListener('click', () => {
+        body?.classList.replace('overflow-hidden', 'overflow-auto')
+        menu?.classList.replace('h-dvh', 'h-0')
+        menu?.classList.replace('fixed', 'hidden')
+        menu?.classList.replace('translate-y-0', '-translate-y-full')
+      })
+    }
+  }
+
+  closeMenu()
+</script>

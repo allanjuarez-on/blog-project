@@ -1,10 +1,12 @@
 ---
 import { getCollection, getEntries } from 'astro:content'
+import { Image } from 'astro:assets'
 import BlogLayout from '@layouts/BlogLayout.astro'
 import Link from '@components/Link.astro'
 import CategoryFilter from '@components/CategoryFilters.astro'
 import CardArticle from '@components/CardArticle.astro'
 import WithoutContent from '@components/WithoutContent.astro'
+import NoContent from '../../assets/nocontent-image.svg'
 
 const pageTitle = 'allanjuarez.com | blog'
 
@@ -34,11 +36,12 @@ const allArticles = await getArticles()
 ---
 
 <BlogLayout pageTitle={pageTitle}>
-  <div>
+  <section class='sticky top-0 z-[8]'>
     <CategoryFilter categories={categories} />
-  </div>
-  <section>
-    <div>
+  </section>
+  <section class='relative px-4'>
+    <Image id='NoContent' class='hidden' src={NoContent} alt='' />
+    <div id='Content' class='flex flex-col gap-12 z-0 pb-16'>
       {
         allArticles &&
           allArticles.length !== 0 &&
@@ -49,6 +52,7 @@ const allArticles = await getArticles()
               <Link
                 type='local'
                 href={`/article/${results.value.id}`}
+                class='hidden'
                 data-card-category={results.value.data.category.id}>
                 <CardArticle {...results.value.data} />
               </Link>
@@ -59,76 +63,51 @@ const allArticles = await getArticles()
   </section>
 </BlogLayout>
 
-<style>
-  .show {
-    display: block;
-  }
-
-  .hide {
-    display: none;
-  }
-</style>
-
 <script>
-  // La etiqueta "script" soporta completamente typescript.
-  interface UrlDataEvent {
-    payload: string | null
-  }
+  import type { UrlChangeEventData } from '@custom-types/global'
 
+  // La etiqueta "script" soporta typescript.
   enum CardState {
-    HIDE = 'hide',
-    SHOW = 'show'
+    HIDE = 'hidden',
+    SHOW = 'block',
   }
 
-  // Por defecto las etiquetas script en Astro esperan a que sea cargue todo el HTML, de esta manera no se necesita del evento "load"
-  function markActiveCardElementsByURL() {
-    const currentFilter = new URL(window.location).searchParams.get('category')
-    const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
-    
-    // Next version:
-    // const heading = document.querySelector('#PageHeading')
-    // updatePrimaryHeading(heading, currentFilter)
+  const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
 
-    cards.forEach(node => {
-      const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
+  // Reutilizable
+  function checkVisibleCards(nodes: NodeListOf<Element>) {
+    if (!nodes || nodes.length === 0) {
+      return
+    }
 
-      if (!currentFilter || currentFilter === 'latest' || cardCategory === 'no-content') {
-        node.classList.add(CardState.SHOW)
-        return
-      }
+    const isDisabled = Array.from(nodes).every(node => node.classList.contains('hidden'))
+    const component = document.querySelector('#NoContent')
 
-      if (currentFilter === cardCategory) {
-        node.classList.add(CardState.SHOW)
-        return
-      }
-
-      if (currentFilter !== cardCategory) {
-        node.classList.add(CardState.HIDE)
-        return
-      }
-    })
+    if (isDisabled) {
+      console.log('Todos estan inactivos!')
+      component?.classList.remove('hidden')
+      component?.classList.add('block')
+    } else {
+      console.log('Hay uno o varios activos')
+      component?.classList.remove('block')
+      component?.classList.add('hidden')
+    }
   }
 
-  function updateUIByPayload(currentFilter: string | null) {
-    const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
-    
-    // Next version:
-    // const heading = document.querySelector('#PageHeading')
-    // updatePrimaryHeading(heading, currentFilter)
-    
-    cards.forEach(node => {
+  function setActiveClass(nodes: NodeListOf<Element>, currentFilter: string | null) {
+    nodes.forEach(node => {
       const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
-
-      if(!currentFilter && currentFilter !== 'latest' && cardCategory === 'no-content') {
-        node.classList.replace(CardState.SHOW, CardState.HIDE)
-        return
-      }
 
       if (!currentFilter || currentFilter === 'latest') {
         node.classList.replace(CardState.HIDE, CardState.SHOW)
         return
       }
 
+      if (!currentFilter && currentFilter !== 'latest' && cardCategory === 'no-content') {
+        node.classList.replace(CardState.SHOW, CardState.HIDE)
+        return
+      }
+
       if (currentFilter === cardCategory) {
         node.classList.replace(CardState.HIDE, CardState.SHOW)
         return
@@ -141,28 +120,23 @@ const allArticles = await getArticles()
     })
   }
 
-  markActiveCardElementsByURL();
+  // Por defecto las etiquetas script en Astro esperan a que sea cargue todo el HTML, de esta manera no se necesita del evento "load"
+  function syncActiveCardsByUrlParams() {
+    const currentFilter = new URL(window.location).searchParams.get('category')
+    setActiveClass(cards, currentFilter)
+  }
+
+  function syncUIByUrlParams(currentFilter: string | null) {
+    setActiveClass(cards, currentFilter)
+  }
+
+  syncActiveCardsByUrlParams()
+  checkVisibleCards(cards)
 
   window.addEventListener('changeUrl', e => {
     // Type assertion or Type cast
-    const changeUrlEvent = e as CustomEvent<UrlDataEvent>
-    updateUIByPayload(changeUrlEvent.detail.payload)
+    const changeUrlEvent = e as CustomEvent<UrlChangeEventData>
+    syncUIByUrlParams(changeUrlEvent.detail.payload)
+    checkVisibleCards(cards)
   })
-
-  // Next version:
-  // function updatePrimaryHeading(node: Element | null, filter: string | null) {
-  //   if(!node || !filter) {
-  //     return
-  //   }
-
-  //   const displayNameCategory = filter.split('').map((letter) => letter.toUpperCase()).join('')
-
-  //   if(!filter || filter === 'latest') {
-  //     node.textContent = 'LO ÚLTIMO'
-  //   }
-
-  //   if(filter && filter !== 'latest') {
-  //     node.textContent = displayNameCategory
-  //   }
-  // }
 </script>

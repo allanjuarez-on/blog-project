@@ -1,13 +1,29 @@
 ---
 import { Image } from 'astro:assets'
 const { ...props } = Astro.props
+
+const dateFormat = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' }).format(props.date)
+const tagName = props.category.id.toLowerCase().split('').with(0, props.category.id[0].toUpperCase())
 ---
 
-<article>
-  <Image src={props.thumbnail.img} alt={props.thumbnail.description} />
-  <span>{props.category.id}</span>
-  <div>
-    <span>date</span>
-    <h3>{props.title}</h3>
+<article class='relative px-6 py-10 flex flex-col justify-center items-center min-h-64 border-1 border-gray-600'>
+  <div class='absolute inset-0 bg-gradient-to-t from-black/70 to-transparent'></div>
+  <!-- Image -->
+  <Image src={props.thumbnail.img} alt={props.thumbnail.description} class='overlay object-cover absolute w-full h-full' />
+
+  <!-- Tag -->
+  <span class="font-mono z-1 absolute right-0 top-0 px-3 py-2 text-[0.875rem]  bg-gray-925">{tagName}</span>
+
+  <!-- Content -->
+  <div class="z-1 flex flex-col gap-2 text-center">
+    <span class='text-[1rem]'>{dateFormat}</span>
+    <h3 class='text-[1.25rem]'>{props.title}</h3>
   </div>
 </article>
+
+<style>
+  .overlay {
+    mask: linear-gradient(to top, transparent 0%, black);
+    -webkit-mask: linear-gradient(to top, transparent 0%, black);
+  }
+</style>

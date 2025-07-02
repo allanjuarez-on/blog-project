@@ -1,5 +1,5 @@
 ---
-import FilterButton from './FilterButton.astro'
+import ObserverLink from './ObserverLink.astro'
 
 interface Props {
   categories: {
@@ -12,31 +12,54 @@ interface Props {
 const { categories, class: className, ...props } = Astro.props
 ---
 
-<div class:list={[className]} {...props}>
-  {
-    categories.map(categories => {
-      // with(index, newElement) | No mutable
-      // Metodo de arrays que retorna una copia exacta del array original solo modificando un indice dado.
-      // .with(0, categories.name[0].toUpperCase())
-      const categoryDisplayName = categories.name
-        .split('')
-        .map((letter) => letter.toUpperCase())
-        .join('')
-      return (
-        <FilterButton href={`?category=${categories.name}`} filterName={categoryDisplayName} data-filter={categories.name} />
-      )
-    })
-  }
+<div
+  id='PrimaryFiltersWrapper'
+  class:list={[
+    'mb-8 py-8 px-6 flex flex-row gap-8 overflow-y-hidden overflow-x-auto bg-gray-1000/50 backdrop-blur-3xl scrollbar',
+    className,
+  ]}
+  {...props}>
+  <ObserverLink
+    ref={`?category=${categories[0].name}`}
+    label={categories[0].name.split('').with(0, categories[0].name[0].toUpperCase())}
+    class='text-[1.125rem] font-medium'
+    data-value={categories[0].name}
+  />
+  <div class='flex flex-row gap-8'>
+    {
+      categories.map(category => {
+        // with(index, newElement) | No mutable
+        // Metodo de arrays que retorna una copia exacta del array original solo modificando un indice dado.
+        // .with(0, category.name[0].toUpperCase())
+        const categoryDisplayName = category.name.split('').with(0, category.name[0].toUpperCase())
+
+        if (category.name !== 'latest') {
+          return (
+            <ObserverLink
+              ref={`?category=${category.name}`}
+              label={categoryDisplayName}
+              class='text-[1.125rem] font-medium'
+              data-value={category.name}
+            />
+          )
+        }
+      })
+    }
+  </div>
 </div>
 
 <script>
-  function updateUrl(filters: NodeListOf<Element> | []): void {
-    if (filters.length === 0) return
+  import { markActiveElement } from '@lib/dom/dom'
+  import type { UrlChangeEventData } from '@custom-types/global'
+
+  // Set Url
+  function setUrlByFilterData(filters: NodeListOf<Element> | undefined): void {
+    if (!filters) return
 
     filters?.forEach(node => {
       // getAttribute(<attribute>)
       // Retorna el valor de un atributo, si el atributo no existe retorna null.
-      const filterData = node.getAttribute('data-filter')
+      const filterData = node.getAttribute('data-value')
 
       if (!filterData) return
 
@@ -56,7 +79,7 @@ const { categories, class: className, ...props } = Astro.props
             new CustomEvent('changeUrl', { detail: { payload: url.searchParams.get('category') } }),
           )
 
-          return  
+          return
         } else {
           url.searchParams.set('category', filterData)
 
@@ -73,5 +96,70 @@ const { categories, class: className, ...props } = Astro.props
     })
   }
 
-  updateUrl(document.querySelectorAll('a[data-filter]'))
+  // Sync active filter on load
+  function syncActiveFilterOnLoad(filters: NodeListOf<Element> | undefined) {
+    if (!filters) return
+
+    const url = new URL(window.location)
+    const currentUrlCategory = url.searchParams.get('category')
+
+    for (const filter of Array.from(filters)) {
+      const currentFilterValue = filter.dataset.value
+      const isActive = currentFilterValue === currentUrlCategory
+
+      markActiveElement(filter, isActive)
+
+      const parent = filter.parentNode
+      if (parent?.firstElementChild !== filter && currentFilterValue !== 'latest' && isActive) {
+        parent?.insertBefore(filter, parent.firstElementChild)
+      }
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+    primaryFiltersWrapper.scrollTo({ left: 0, behavior: 'smooth' })
+  }
+
+  // Sync primary filters
+  function syncActiveFilterByUrl({
+    filters,
+    currentUrlCategory,
+  }: {
+    filters: NodeListOf<Element> | undefined
+    currentUrlCategory: string | null
+  }) {
+    if (!filters) return
+
+    for (const filter of Array.from(filters)) {
+      const currentFilterValue = filter.dataset.value //data-*
+      const isActive = currentFilterValue === currentUrlCategory
+
+      markActiveElement(filter, isActive)
+
+      // .parentNode
+      // Propiedad que devuelve el padre de un elemento hijo, si el elemento se acaba de crear sin tener un arbol asociado o no tiene padre retorna null.
+      const parent = filter.parentNode
+      // reorder()
+      if (parent?.firstElementChild !== filter && currentFilterValue !== 'latest' && isActive) {
+        // insertBefore(newNode, OldNode)
+        // Inserta un elemento antes que otro ya existente.
+        parent?.insertBefore(filter, parent.firstElementChild)
+      }
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+    primaryFiltersWrapper.scrollTo({ left: 0, behavior: 'smooth' })
+  }
+
+  const primaryFiltersWrapper = document.querySelector('#PrimaryFiltersWrapper')
+  const primaryFilters = primaryFiltersWrapper?.querySelectorAll('a[data-value]')
+
+  syncActiveFilterOnLoad(primaryFilters)
+  setUrlByFilterData(primaryFilters)
+
+  window.addEventListener('changeUrl', e => {
+    const event = e as CustomEvent<UrlChangeEventData>
+    const payload = event.detail.payload
+
+    syncActiveFilterByUrl({ filters: primaryFilters, currentUrlCategory: payload })
+  })
 </script>

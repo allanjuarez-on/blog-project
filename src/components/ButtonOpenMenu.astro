@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro'
+
+const { class: className, ...props } = Astro.props
+---
+
+<button id='ButtonOpenMenu' class:list={['cursor-pointer', className]} {...props}>
+  <Icon iconName='open' />
+</button>
+
+<script>
+  function openMenu() {
+    const buttonOpenComponent = document.querySelector('#ButtonOpenMenu')
+    const menu = document.querySelector('#PrimaryMenu')
+    const body = document.querySelector('body')
+    
+    if (menu && body) {
+      buttonOpenComponent?.addEventListener('click', () => {
+        body?.classList.add('overflow-hidden')
+        menu?.classList.replace('hidden', 'fixed')
+        menu?.classList.replace('h-0', 'h-dvh')
+        menu?.classList.replace('-translate-y-full', 'translate-y-0')
+      })
+    }
+  }
+
+  openMenu()
+</script>

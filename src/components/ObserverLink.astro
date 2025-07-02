@@ -1,0 +1,13 @@
+---
+const { ref = '/', label = 'Link', class: className, ...props } = Astro.props
+---
+
+<a
+  href={ref}
+  class:list={[
+    'text-gray-50/50 no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50',
+    className,
+  ]}
+  {...props}>
+  {label}
+</a>

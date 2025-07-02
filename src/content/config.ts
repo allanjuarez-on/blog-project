@@ -46,7 +46,7 @@ const articleSchema = ({ image }: SchemaContext) => {
   return z.object({
     title: z.string().max(60, { message: 'El titulo no debe ser mayor a 60 caracteres.' }),
     authors: z.array(reference('authors')),
-    date: z.string().transform(str => new Date(str)),
+    date: z.coerce.date(),
     category: reference('categories'),
     cover: imageSchema({ image }),
     thumbnail: imageSchema({ image }),

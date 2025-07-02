@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets'
+import Circle from '../assets/Circle.svg'
+import Oval from '../assets/Oval.svg'
+import Star from '../assets/Star.svg'
+import Square from '../assets/Square.svg'
+---
+
+<div class='hidden dynamic-slider' data-banner-value='portfolio'>
+  <div class='dynamic-slider__track'>
+    <div class='dynamic-slider__container'>
+      <Image class='dynamic-slider__item' src={Circle} alt={'Circle'} />
+      <Image class='dynamic-slider__item' src={Oval} alt={'Oval'} />
+      <Image class='dynamic-slider__item' src={Star} alt={'Star'} />
+      <Image class='dynamic-slider__item' src={Square} alt={'Square'} />
+    </div>
+  </div>
+</div>
+
+<style>
+  .dynamic-slider {
+    position: absolute;
+  }
+
+  .dynamic-slider__track {
+    width: 200vw;
+  }
+
+  .dynamic-slider,
+  .dynamic-slider__track {
+    overflow: hidden;
+  }
+
+  .dynamic-slider__container {
+    --duration: 12s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+
+    animation-name: swift-scroll;
+    animation-duration: var(--duration);
+    animation-direction: normal;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .dynamic-slider__item {
+    width: fit-content;
+    height: 12rem;
+    user-select: none;
+  }
+
+  @keyframes swift-scroll {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @media (width > 1024px) {
+    .dynamic-slider__container:hover {
+      animation-play-state: paused;
+    }
+  }
+</style>

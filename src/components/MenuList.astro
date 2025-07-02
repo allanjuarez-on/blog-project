@@ -1,39 +1,40 @@
 ---
-import Link from '@components/Link.astro'
+import ObserverLink from './ObserverLink.astro'
+import Edge from './Edge.astro'
+import BlogFlag from './BlogFlag.astro'
+import PortfolioFlag from './PortfolioFlag.astro'
 import type { MainMenuLink } from '@custom-types/global'
 
 interface Props {
-  routes: MainMenuLink[]
+  links: MainMenuLink[]
+  class?: string | null | undefined
 }
 
-const { routes } = Astro.props
+const { links, class: className, ...props } = Astro.props
 ---
 
-<div>
-  {
-    routes.map(link => {
-      const Banner = link.banner
-
-      if (!Banner) {
-        return <span>No existe un banner disponible.</span>
+<Edge class:list={[className]} {...props}>
+  <div class='relative p-10 flex flex-col gap-8 justify-end h-full overflow-hidden'>
+    <div class='flex flex-row justify-center items-center h-full'>
+      <BlogFlag size={192} />
+      <PortfolioFlag />
+    </div>
+    <ul class='flex flex-col gap-7 text-center'>
+      {links.length === 0 && <span>No hay links disponibles</span>}
+      {
+        links.map(link => {
+          return (
+            <li>
+              <ObserverLink
+                ref={link.href}
+                label={link.label}
+                class='text-[1.75rem] font-medium'
+                data-menu-link-value={link.label.toLowerCase()}
+              />
+            </li>
+          )
+        })
       }
-
-      return <Banner />
-    })
-  }
-</div>
-<ul>
-  {routes.length === 0 && <span>No hay links disponibles</span>}
-
-  {
-    routes.map(link => {
-      return (
-        <li>
-          <Link type={link.type} href={link.href}>
-            {link.label}
-          </Link>
-        </li>
-      )
-    })
-  }
-</ul>
+    </ul>
+  </div>
+</Edge>
