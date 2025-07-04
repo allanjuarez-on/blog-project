@@ -1,168 +1,19 @@
 ---
-import { getCollection, getEntries } from 'astro:content'
+import { getCollection } from 'astro:content'
 import BlogLayout from '@layouts/BlogLayout.astro'
-import Link from '@components/Link.astro'
 import CategoryFilter from '@components/CategoryFilters.astro'
-import CardArticle from '@components/CardArticle.astro'
-import WithoutContent from '@components/WithoutContent.astro'
+import BlogContent from '@components/BlogContent.astro'
 
-const pageTitle = 'allanjuarez.com | blog'
-
-// Las content collections de Astro permiten recuperar datos de tres maneras:
-// 1. getCollections() -> Obtiene una colección entera
-// 2. getEntry() -> Recupera un elemento de una colección.
-// 3. getEntries() -> Recupera uno o varios datos refenciados
 const categories = (await getCollection('categories')).map(raw => raw.data)
 
-async function getArticles() {
-  const rawArticles = await getCollection('articles')
-  const articles = rawArticles.map(async raw => {
-    const rawAuthors = await getEntries(raw.data.authors)
-    return {
-      id: raw.id,
-      data: {
-        ...raw.data,
-        authors: [...rawAuthors],
-      },
-    }
-  })
-
-  return Promise.allSettled(articles).then(results => results)
-}
-
-const allArticles = await getArticles()
+const pageTitle = 'Blog'
 ---
 
 <BlogLayout pageTitle={pageTitle}>
-  <div>
+  <section class='sticky top-0 z-[8]'>
     <CategoryFilter categories={categories} />
-  </div>
-  <section>
-    <div>
-      {
-        allArticles &&
-          allArticles.length !== 0 &&
-          allArticles.map(results => {
-            return results.status !== 'fulfilled' ? (
-              <WithoutContent data-card-category={'no-content'} />
-            ) : (
-              <Link
-                type='local'
-                href={`/article/${results.value.id}`}
-                data-card-category={results.value.data.category.id}>
-                <CardArticle {...results.value.data} />
-              </Link>
-            )
-          })
-      }
-    </div>
+  </section>
+  <section class='relative px-4'>
+    <BlogContent />
   </section>
 </BlogLayout>
-
-<style>
-  .show {
-    display: block;
-  }
-
-  .hide {
-    display: none;
-  }
-</style>
-
-<script>
-  // La etiqueta "script" soporta completamente typescript.
-  interface UrlDataEvent {
-    payload: string | null
-  }
-
-  enum CardState {
-    HIDE = 'hide',
-    SHOW = 'show'
-  }
-
-  // Por defecto las etiquetas script en Astro esperan a que sea cargue todo el HTML, de esta manera no se necesita del evento "load"
-  function markActiveCardElementsByURL() {
-    const currentFilter = new URL(window.location).searchParams.get('category')
-    const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
-    
-    // Next version:
-    // const heading = document.querySelector('#PageHeading')
-    // updatePrimaryHeading(heading, currentFilter)
-
-    cards.forEach(node => {
-      const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
-
-      if (!currentFilter || currentFilter === 'latest' || cardCategory === 'no-content') {
-        node.classList.add(CardState.SHOW)
-        return
-      }
-
-      if (currentFilter === cardCategory) {
-        node.classList.add(CardState.SHOW)
-        return
-      }
-
-      if (currentFilter !== cardCategory) {
-        node.classList.add(CardState.HIDE)
-        return
-      }
-    })
-  }
-
-  function updateUIByPayload(currentFilter: string | null) {
-    const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
-    
-    // Next version:
-    // const heading = document.querySelector('#PageHeading')
-    // updatePrimaryHeading(heading, currentFilter)
-    
-    cards.forEach(node => {
-      const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
-
-      if(!currentFilter && currentFilter !== 'latest' && cardCategory === 'no-content') {
-        node.classList.replace(CardState.SHOW, CardState.HIDE)
-        return
-      }
-
-      if (!currentFilter || currentFilter === 'latest') {
-        node.classList.replace(CardState.HIDE, CardState.SHOW)
-        return
-      }
-
-      if (currentFilter === cardCategory) {
-        node.classList.replace(CardState.HIDE, CardState.SHOW)
-        return
-      }
-
-      if (currentFilter !== cardCategory) {
-        node.classList.replace(CardState.SHOW, CardState.HIDE)
-        return
-      }
-    })
-  }
-
-  markActiveCardElementsByURL();
-
-  window.addEventListener('changeUrl', e => {
-    // Type assertion or Type cast
-    const changeUrlEvent = e as CustomEvent<UrlDataEvent>
-    updateUIByPayload(changeUrlEvent.detail.payload)
-  })
-
-  // Next version:
-  // function updatePrimaryHeading(node: Element | null, filter: string | null) {
-  //   if(!node || !filter) {
-  //     return
-  //   }
-
-  //   const displayNameCategory = filter.split('').map((letter) => letter.toUpperCase()).join('')
-
-  //   if(!filter || filter === 'latest') {
-  //     node.textContent = 'LO ÚLTIMO'
-  //   }
-
-  //   if(filter && filter !== 'latest') {
-  //     node.textContent = displayNameCategory
-  //   }
-  // }
-</script>

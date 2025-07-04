@@ -1,0 +1,73 @@
+---
+import MenuBar from './MenuBar.astro'
+import MenuList from './MenuList.astro'
+import type { MainMenuLink } from '@custom-types/global'
+
+interface Props {
+  links: MainMenuLink[]
+  class?: string | null | undefined
+}
+
+const { links, class: className } = Astro.props
+---
+
+<div
+  id='PrimaryMenu'
+  class:list={[
+    '-translate-y-full hidden z-[10] left-0 top-0 right-0 h-0 bg-gray-1000/50 backdrop-blur-3xl',
+    className,
+  ]}>
+  <div class='p-4 h-full flex flex-col'>
+    <MenuBar data-edge-all />
+    <MenuList data-edge-lbr class='flex-1' links={links} />
+  </div>
+</div>
+
+<script>
+  import { markActiveLink } from '@lib/dom/blog'
+
+  const menu = document.querySelector('#PrimaryMenu')
+  const menuList = menu?.querySelectorAll('a[data-menu-link-value]')
+  const bannerList = menu?.querySelectorAll('[data-banner-value]')
+
+  const createUrl = new URL(window.location.href).pathname.split('')
+  createUrl.shift()
+  const currentPathname = createUrl.join('')
+
+  menuList?.forEach(link => {
+    const dataLink = link.dataset.menuLinkValue
+    const isActive = dataLink === currentPathname
+
+    markActiveLink(link, isActive)
+  })
+
+  bannerList?.forEach(banner => {
+    const idBanner = banner.dataset.bannerValue
+    const isActive = idBanner === currentPathname
+
+    if (!isActive) {
+      banner.classList.remove('block')
+      banner.classList.add('hidden')
+      return
+    }
+
+    if (idBanner === 'blog') {
+      banner.classList.remove('hidden')
+      const path = banner.querySelector('#BlogFlagVector')
+      path.classList.add('block', 'lightning')
+      return
+    }
+
+    if (idBanner === 'portfolio') {
+      banner.classList.remove('hidden')
+      banner.classList.add('block')
+      return
+    }
+  })
+
+
+  menu?.addEventListener('contextmenu', e => {
+    e.preventDefault()
+    e.stopPropagation()
+  })
+</script>

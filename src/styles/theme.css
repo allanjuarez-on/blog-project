@@ -1,0 +1,140 @@
+/* SANS */
+/* IMPORTANTE: Se elimino la funcion 'local()' porque generaba problemas al momento de cargar las fuentes del proyecto. */
+@font-face {
+  font-family: ibm-plex-sans;
+  src:
+    url('/fonts/sans/ibm-plex-sans-light.woff2') format('woff2'),
+    url('/fonts/sans/ibm-plex-sans-light.woff') format('woff');
+  /* swap evita el FOIT (Flash of invisible text) carga una fuente del sistema mientras carga en segundo plano la fuente de la aplicación */
+  font-display: swap;
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: ibm-plex-sans;
+  src:
+    url('/fonts/sans/ibm-plex-sans-regular.woff2') format('woff2'),
+    url('/fonts/sans/ibm-plex-sans-regular.woff') format('woff');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: ibm-plex-sans;
+  src:
+    url('/fonts/sans/ibm-plex-sans-medium.woff2') format('woff2'),
+    url('/fonts/sans/ibm-plex-sans-medium.woff') format('woff');
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: ibm-plex-sans;
+  src:
+    url('/fonts/sans/ibm-plex-sans-semibold.woff2') format('woff2'),
+    url('/fonts/sans/ibm-plex-sans-semibold.woff') format('woff');
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* MONO */
+@font-face {
+  font-family: ibm-plex-mono;
+  src:
+    url('/fonts/mono/ibm-plex-mono-regular.woff2') format('woff2'),
+    url('/fonts/mono/ibm-plex-mono-regular.woff') format('woff');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: ibm-plex-mono;
+  src:
+    url('/fonts/mono/ibm-plex-mono-medium.woff2') format('woff2'),
+    url('/fonts/mono/ibm-plex-mono-medium.woff') format('woff');
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: ibm-plex-mono;
+  src:
+    url('/fonts/mono/ibm-plex-mono-semibold.woff2') format('woff2'),
+    url('/fonts/mono/ibm-plex-mono-semibold.woff') format('woff');
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+}
+
+@theme {
+  /* TYPOGRAPHY */
+  /* Esto elimina por completo las clases de utilidad que son impulsadas por las variables del tema. */
+  --font-*: initial;
+  --font-sans:
+    'ibm-plex-sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono: 'ibm-plex-mono';
+
+  /* COLORS */
+  --color-gray-1000: hsl(0 0% 0%);
+  --color-gray-975: hsl(210 14% 3%);
+  --color-gray-950: hsl(210 10% 4%);
+  --color-gray-925: hsl(216 12% 8%);
+  --color-gray-900: hsl(206 11% 12%);
+  --color-gray-800: hsl(210 11% 15%);
+  --color-gray-700: hsl(210 10% 23%);
+  --color-gray-600: hsl(210 9% 31%);
+  --color-gray-500: hsl(208 7% 46%);
+  --color-gray-400: hsl(210 11% 71%);
+  --color-gray-300: hsl(210 14% 83%);
+  --color-gray-200: hsl(210 14% 89%);
+  --color-gray-100: hsl(210 16% 93%);
+  --color-gray-50: hsl(210 17% 98%);
+
+  /* TRANSLUCED GRAYS */
+  --color-gray-600-75: hsl(210 9% 31% / 75%);
+  --color-gray-600-50: hsl(210 9% 31% / 50%);
+
+  --color-gray-50-75: hsl(210 17% 98% / 75%);
+  --color-gray-50-50: hsl(210 17% 98% / 50%);
+  --color-gray-50-48: hsl(210 17% 98% / 48%);
+  --color-gray-50-24: hsl(210 17% 98% / 24%);
+  --color-gray-50-16: hsl(210 17% 98% / 16%);
+  --color-gray-50-8: hsl(210 17% 98% / 8%);
+  --color-gray-50-4: hsl(210 17% 98% / 4%);
+  --color-translucent: hsl(0, 0%, 0% / 0%);
+
+  --color-lightning: linear-gradient(to right, var(--color-gray-50), var(--color-gray-600))
+}
+
+@layer base {
+  svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+@layer utilities {
+  .scrollbar {
+    overflow-x: scroll;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    height: 2px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+}

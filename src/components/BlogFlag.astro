@@ -1,0 +1,48 @@
+---
+import Icon from './Icon.astro'
+
+interface Props {
+  size?: string | number
+}
+
+const { size = '24' } = Astro.props
+---
+
+<Icon
+  class='hidden'
+  data-banner-value='blog'
+  iconName='BlogFlag'
+  size={size}
+  exp={new RegExp('\\.custom.astro$', 'i')}
+/>
+
+<style is:global>
+  #BlogFlagVector, #BlogFlagVectorShadow  {
+    fill: none;
+    stroke-width: 11;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  #BlogFlagVectorShadow {
+    stroke: var(--color-gray-50-50);
+  }
+  
+  .lightning {
+    d: path('');
+    animation: lightningMotion 2s ease-out forwards;
+  }
+
+  @keyframes lightningMotion {
+    100% {
+      stroke: url('#LightningGradient');
+      /* Chunks */
+      stroke-dasharray: 1000;
+      /* Direccion y velocidad */
+      stroke-dashoffset: -2000;
+      d: path(
+        'M8 247.5C71.8125 185.468 129.943 113.612 185.5 8C182.569 26.2394 186.019 214.93 209.5 199C232.981 183.07 248.5 152 266 141.5C283.5 131 275.5 188.5 275.5 188.5C275.5 188.5 300 125.5 337.5 106'
+      );
+    }
+  }
+</style>

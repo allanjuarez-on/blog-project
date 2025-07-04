@@ -1,0 +1,23 @@
+---
+interface Props {
+  size?: number
+  class: string | null | undefined
+}
+
+const { class: className, size, ...props } = Astro.props
+---
+
+<svg width={size} height={size} viewBox='0 0 464 256' fill='none' xmlns='http://www.w3.org/2000/svg' id="LetsTalk" class:list={[className]} { ...props }>
+  <path
+    id='LetsTalkFlag'
+    d='M8 241.947C8.21038 243.52 121.025 268.823 172.5 201C190.961 176.676 196.5 153 189.5 137.5C177.541 111.02 139.5 112.5 113 150.5C86.5 188.5 110.714 235.826 198 229.947C285.286 224.069 331 160 319.5 127C308 93.9999 246.064 88.9472 218.5 140C190.936 191.052 201.5 270.451 279 241.947C356.5 213.443 430.5 42 430.5 42M380 36C402.5 41.5 453 8 453 8C453 8 443.5 59 456 83.5'></path>
+</svg>
+
+<svg width='0' height='0' xmlns='http://www.w3.org/2000/svg'>
+  <defs>
+    <linearGradient id='OtherGradient' gradientTransform="rotate(90)">
+      <stop offset='0%' stop-color='#F8F9FA'></stop>
+      <stop offset='100%' stop-color='#495057'></stop>
+    </linearGradient>
+  </defs>
+</svg>

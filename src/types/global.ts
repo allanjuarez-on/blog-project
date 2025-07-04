@@ -24,8 +24,12 @@ export interface PrimitiveLink {
 }
 
 export interface MainMenuLink {
-  type: string
+  id: string
   href: string
   label: string
-  banner: ((_props: Record<string, any>) => any) | null
+  banner?: ((_props: Record<string, any>) => any) | null
+}
+
+export interface UrlChangeEventData {
+  payload: string | null
 }

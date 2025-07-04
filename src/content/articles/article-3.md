@@ -2,7 +2,7 @@
 title: NextJS 15 Middlewares
 authors:
   - astronave
-date: Ago/02/2025
+date: Sep/02/2025
 category: NextJS
 cover:
   img: src/assets/default-image.svg
