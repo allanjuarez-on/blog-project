@@ -28,7 +28,7 @@ const { class: className, ...props } = Astro.props
 </footer>
 
 <script>
-  import { markActiveElement } from "@lib/dom/dom"
+  import { markActiveLink } from "@lib/dom/blog"
 
   const siteMap = document.querySelector('#SiteMap')
   const linkList = siteMap?.querySelectorAll('a[data-value]')
@@ -41,6 +41,6 @@ const { class: className, ...props } = Astro.props
     const dataLink = (link.dataset.value).toLowerCase()
     const isActive = dataLink === currentPathname
 
-    markActiveElement(link, isActive)
+    markActiveLink(link, isActive)
   })
 </script>

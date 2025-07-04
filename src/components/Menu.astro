@@ -24,13 +24,13 @@ const { links, class: className } = Astro.props
 </div>
 
 <script>
-  import { markActiveElement } from '@lib/dom/dom'
+  import { markActiveLink } from '@lib/dom/blog'
 
   const menu = document.querySelector('#PrimaryMenu')
   const menuList = menu?.querySelectorAll('a[data-menu-link-value]')
   const bannerList = menu?.querySelectorAll('[data-banner-value]')
 
-  const createUrl = new URL(window.location).pathname.split('')
+  const createUrl = new URL(window.location.href).pathname.split('')
   createUrl.shift()
   const currentPathname = createUrl.join('')
 
@@ -38,7 +38,7 @@ const { links, class: className } = Astro.props
     const dataLink = link.dataset.menuLinkValue
     const isActive = dataLink === currentPathname
 
-    markActiveElement(link, isActive)
+    markActiveLink(link, isActive)
   })
 
   bannerList?.forEach(banner => {

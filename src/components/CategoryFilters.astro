@@ -49,7 +49,7 @@ const { categories, class: className, ...props } = Astro.props
 </div>
 
 <script>
-  import { markActiveElement } from '@lib/dom/dom'
+  import { markActiveLink } from '@lib/dom/blog'
   import type { UrlChangeEventData } from '@custom-types/global'
 
   // Set Url
@@ -67,7 +67,7 @@ const { categories, class: className, ...props } = Astro.props
         // Previene el comportamiento "natural" del elemento html, en este caso el anchor no actualizara la pagína.
         e.preventDefault()
 
-        const url = new URL(window.location)
+        const url = new URL(window.location.href)
         // Obtiene el valor de un search param de la URL.
         const currentFilter = url.searchParams.get('category')
 
@@ -100,14 +100,14 @@ const { categories, class: className, ...props } = Astro.props
   function syncActiveFilterOnLoad(filters: NodeListOf<Element> | undefined) {
     if (!filters) return
 
-    const url = new URL(window.location)
+    const url = new URL(window.location.href)
     const currentUrlCategory = url.searchParams.get('category')
 
     for (const filter of Array.from(filters)) {
       const currentFilterValue = filter.dataset.value
       const isActive = currentFilterValue === currentUrlCategory
 
-      markActiveElement(filter, isActive)
+      markActiveLink(filter, isActive)
 
       const parent = filter.parentNode
       if (parent?.firstElementChild !== filter && currentFilterValue !== 'latest' && isActive) {
@@ -133,7 +133,7 @@ const { categories, class: className, ...props } = Astro.props
       const currentFilterValue = filter.dataset.value //data-*
       const isActive = currentFilterValue === currentUrlCategory
 
-      markActiveElement(filter, isActive)
+      markActiveLink(filter, isActive)
 
       // .parentNode
       // Propiedad que devuelve el padre de un elemento hijo, si el elemento se acaba de crear sin tener un arbol asociado o no tiene padre retorna null.
