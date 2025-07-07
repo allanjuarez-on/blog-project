@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets'
+import Link from './Link.astro'
+import type { ImageMetadata } from 'astro'
+
+interface Props {
+  title: string
+  date: string | Date
+  authors: any[]
+  cover: {
+    src: ImageMetadata
+    alt: string
+  }
+}
+
+const {
+  title = 'Article Title',
+  date = 'Janury/01/2000',
+  authors = [{ id: '@allanjuarez' }],
+  cover,
+} = Astro.props
+
+const dateFormat = new Intl.DateTimeFormat('es-MX', {
+  dateStyle: 'full',
+}).format(new Date(date))
+---
+
+<article>
+  <Image src={cover.src} alt={cover.alt} />
+  <section>
+    <h1>{title}</h1>
+    <div>
+      <span>{dateFormat}</span>
+      <div>
+        <span>Escrito por:</span>
+        <div class='flex flex-col'>
+          {
+            authors.map(author => (
+              <Link
+                type='external'
+                href={`https://www.linkedin.com/in/edgarallanjuarezcanas/`}>{`@${author.id}`}</Link>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <slot />
+  </section>
+</article>

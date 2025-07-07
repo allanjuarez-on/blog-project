@@ -36,12 +36,13 @@ const allArticles = await getArticles()
     allArticles &&
       allArticles.length !== 0 &&
       allArticles.map(results => {
+        console.log(results.value.data)
         return results.status !== 'fulfilled' ? (
           <WithoutContent data-card-category={'no-content'} />
         ) : (
           <Link
             type='local'
-            href={`/article/${results.value.id}`}
+            href={`blog/${results.value.id}`}
             class='hidden'
             data-card-category={results.value.data.category.id}>
             <CardArticle {...results.value.data} />
