@@ -46,11 +46,11 @@ const articleSchema = ({ image }: SchemaContext) => {
   return z.object({
     title: z.string().max(60, { message: 'El titulo no debe ser mayor a 60 caracteres.' }),
     authors: z.array(reference('authors')),
-    date: z.coerce.date(),
+    pubDate: z.coerce.date(),
     category: reference('categories'),
     cover: imageSchema({ image }),
     thumbnail: imageSchema({ image }),
-    relatedPosts: reference('posts').array().optional(),
+    relatedPosts: z.array(reference('articles')).optional(),
   })
 }
 const articles = defineCollection({

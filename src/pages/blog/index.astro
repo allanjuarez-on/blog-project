@@ -9,7 +9,6 @@ const categories = (await getCollection('categories')).map(raw => raw.data)
 const pageTitle = 'Blog'
 ---
 
-
 <BlogLayout pageTitle={pageTitle}>
   <section class='sticky top-0 z-[8]'>
     <CategoryFilter categories={categories} />

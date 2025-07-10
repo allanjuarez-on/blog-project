@@ -36,7 +36,6 @@ const allArticles = await getArticles()
     allArticles &&
       allArticles.length !== 0 &&
       allArticles.map(results => {
-        console.log(results.value.data)
         return results.status !== 'fulfilled' ? (
           <WithoutContent data-card-category={'no-content'} />
         ) : (
