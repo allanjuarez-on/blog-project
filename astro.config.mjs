@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import mdx from '@astrojs/mdx'
 import tailwindcss from '@tailwindcss/vite'
+import { remarkReadingTime } from './src/utils/remark-reading-time.ts'
 
 export default defineConfig({
   vite: {
@@ -16,10 +17,10 @@ export default defineConfig({
   // Regirige a una dirección diferente
   // Nota: todas ls solicitudes GET seran redirigidas con un status 301 (moved permanently)
   redirects: {
-      "/": {
-          status: 301,
-          destination: "/blog",
-      },
+    '/': {
+      status: 301,
+      destination: '/blog',
+    },
   },
   // Se puede establecer según el comando que puerto se utiliara (SOLO en preview y dev)
   // Nota: de igual manera se puede pasar solo un objeto con el puerto y otra configuración
@@ -32,5 +33,8 @@ export default defineConfig({
       // Nota: puede ser un booleano o un string que especifique que ruta abrira
       open: false,
     }
+  },
+  markdown: {
+    remarkPlugins: [remarkReadingTime],
   },
 })

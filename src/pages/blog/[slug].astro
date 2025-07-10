@@ -1,0 +1,60 @@
+---
+import { render } from 'astro:content'
+import { getCollection } from 'astro:content'
+import { getEntries } from 'astro:content'
+import { getEntry } from 'astro:content'
+import BlogLayout from '@layouts/BlogLayout.astro'
+import ArticleLayout from '@layouts/ArticleLayout.astro'
+
+export async function getStaticPaths() {
+  const rawArticles = await getCollection('articles')
+
+  const cleanArticles = rawArticles.map(async raw => {
+    const rawArticle = await getEntry(raw)
+    const rawRelatedArticles = await getEntries(rawArticle.data.relatedPosts)
+    return {
+      articleData: {
+        ...rawArticle,
+      },
+      relatedArticles: [...rawRelatedArticles],
+    }
+  })
+
+  const articles = await Promise.allSettled(cleanArticles).then(results =>
+    results.filter(data => data.status === 'fulfilled'),
+  )
+
+  return articles.map(article => {
+    return {
+      params: {
+        slug: article.value.articleData.id,
+      },
+      props: {
+        article: article.value.articleData,
+        relatedArticles: article.value.relatedArticles,
+      },
+    }
+  })
+}
+
+const { article, relatedArticles } = Astro.props
+const { Content, remarkPluginFrontmatter } = await render(article)
+const {
+  title,
+  pubDate,
+  authors,
+  cover: { img, description },
+} = article.data
+---
+
+<BlogLayout pageTitle={title}>
+  <ArticleLayout
+    title={title}
+    pubDate={pubDate}
+    authors={authors}
+    readingTime={remarkPluginFrontmatter.minutesRead}
+    cover={{ src: img, alt: description }}
+    relatedArticles={relatedArticles}>
+    <Content />
+  </ArticleLayout>
+</BlogLayout>

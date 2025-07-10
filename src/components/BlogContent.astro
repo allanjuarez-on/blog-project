@@ -41,7 +41,7 @@ const allArticles = await getArticles()
         ) : (
           <Link
             type='local'
-            href={`/article/${results.value.id}`}
+            href={`blog/${results.value.id}`}
             class='hidden'
             data-card-category={results.value.data.category.id}>
             <CardArticle {...results.value.data} />
