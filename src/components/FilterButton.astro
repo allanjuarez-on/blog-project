@@ -10,6 +10,13 @@ interface Props {
 const { href, filterName, class: className, ...props } = Astro.props
 ---
 
-<Link type='local' href={href} class:list={['font-medium text-gray-50/50 no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50', className]} {...props}>
+<Link
+  type='local'
+  href={href}
+  class:list={[
+    'font-medium text-gray-50/50 no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50',
+    className,
+  ]}
+  {...props}>
   {filterName}
 </Link>

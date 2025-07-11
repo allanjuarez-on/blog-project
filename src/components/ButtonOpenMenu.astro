@@ -13,7 +13,7 @@ const { class: className, ...props } = Astro.props
     const buttonOpenComponent = document.querySelector('#ButtonOpenMenu')
     const menu = document.querySelector('#PrimaryMenu')
     const body = document.querySelector('body')
-    
+
     if (menu && body) {
       buttonOpenComponent?.addEventListener('click', () => {
         body?.classList.add('overflow-hidden')
