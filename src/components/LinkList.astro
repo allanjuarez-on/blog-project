@@ -16,13 +16,17 @@ const { routes, ...props } = Astro.props
       routes &&
         routes.length >= 1 &&
         routes.map(route => {
+          const dataLink = route.label?.split('')
+          dataLink[0] = dataLink[0].toLowerCase()
           return (
             <li>
               <ObserverLink
                 ref={route.href}
                 label={route.label}
                 class='text-gray-50/50'
-                data-value={route.label}
+                data-value={dataLink?.join('')}
+                data-jeje
+                data-hola='jsksajd'
               />
             </li>
           )

@@ -1,4 +1,5 @@
-// La etiqueta "script" soporta typescript.
+import type { AstroNodeList } from '@custom-types/global'
+
 enum CardState {
   HIDE = 'hidden',
   SHOW = 'block',
@@ -18,6 +19,25 @@ export function markActiveLink(element: Element | null | undefined, isActive: bo
     element.classList.replace('no-underline', 'underline')
     element.classList.replace('decoration-gray-50/50', 'decoration-gray-50')
   }
+}
+
+export function syncLinkWithUrlPathName({
+  links,
+  dataAttr,
+}: {
+  links: AstroNodeList
+  dataAttr: string
+}) {
+  if (!links || links.length === 0) return
+
+  const currentPathName = new URL(window.location.href).pathname.split('/')
+  currentPathName.shift()
+
+  links.forEach(link => {
+    const dataLink = link.dataset[dataAttr] ?? ''
+    const isActive = currentPathName.includes(dataLink)
+    markActiveLink(link, isActive)
+  })
 }
 
 export function checkVisibleCards(nodes: NodeListOf<Element>) {
