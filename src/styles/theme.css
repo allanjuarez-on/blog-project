@@ -110,7 +110,7 @@
   --color-gray-50-4: hsl(210 17% 98% / 4%);
   --color-translucent: hsl(0, 0%, 0% / 0%);
 
-  --color-lightning: linear-gradient(to right, var(--color-gray-50), var(--color-gray-600))
+  --color-lightning: linear-gradient(to right, var(--color-gray-50), var(--color-gray-600));
 }
 
 @layer base {

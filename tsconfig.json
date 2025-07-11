@@ -13,7 +13,7 @@
       "@routes/*": ["src/routes/*"],
       "@utils/*": ["src/utils/*"],
       "@custom-types/*": ["src/types/*"],
-      "@assets/*": ["src/assets/*"],
+      "@assets/*": ["src/assets/*"]
     }
   },
   "extends": "astro/tsconfigs/strict",

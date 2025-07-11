@@ -17,7 +17,8 @@ const { size = '24' } = Astro.props
 />
 
 <style is:global>
-  #BlogFlagVector, #BlogFlagVectorShadow  {
+  #BlogFlagVector,
+  #BlogFlagVectorShadow {
     fill: none;
     stroke-width: 11;
     stroke-linecap: round;
@@ -27,7 +28,7 @@ const { size = '24' } = Astro.props
   #BlogFlagVectorShadow {
     stroke: var(--color-gray-50-50);
   }
-  
+
   .lightning {
     d: path('');
     animation: lightningMotion 2s ease-out forwards;

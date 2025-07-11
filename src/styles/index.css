@@ -2,7 +2,7 @@
 @import './theme.css';
 
 html {
-    background-color: black;
-    color: white;
-    scroll-behavior: none;
+  background-color: black;
+  color: white;
+  scroll-behavior: none;
 }
