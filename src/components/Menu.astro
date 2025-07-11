@@ -24,26 +24,20 @@ const { links, class: className } = Astro.props
 </div>
 
 <script>
-  import { markActiveLink } from '@lib/dom/blog'
+  import { syncLinkWithUrlPathName } from '@lib/dom/blog'
+  import type { AstroNodeList } from '@custom-types/global'
 
   const menu = document.querySelector('#PrimaryMenu')
-  const menuList = menu?.querySelectorAll('a[data-menu-link-value]')
-  const bannerList = menu?.querySelectorAll('[data-banner-value]')
+  const menuList: AstroNodeList = menu?.querySelectorAll('a[data-menu-link-value]')
+  const bannerList: AstroNodeList = menu?.querySelectorAll('[data-banner-value]')
 
-  const createUrl = new URL(window.location.href).pathname.split('')
-  createUrl.shift()
-  const currentPathname = createUrl.join('')
+  syncLinkWithUrlPathName({ links: menuList, dataAttr: 'menuLinkValue' })
 
-  menuList?.forEach(link => {
-    const dataLink = link.dataset.menuLinkValue
-    const isActive = dataLink === currentPathname
-
-    markActiveLink(link, isActive)
-  })
+  const currentPathName = new URL(window.location.href).pathname.split('/')
 
   bannerList?.forEach(banner => {
-    const idBanner = banner.dataset.bannerValue
-    const isActive = idBanner === currentPathname
+    const dataBanner = banner.dataset.bannerValue ?? ''
+    const isActive = currentPathName.includes(dataBanner)
 
     if (!isActive) {
       banner.classList.remove('block')
@@ -51,20 +45,19 @@ const { links, class: className } = Astro.props
       return
     }
 
-    if (idBanner === 'blog') {
+    if (dataBanner === 'blog') {
       banner.classList.remove('hidden')
       const path = banner.querySelector('#BlogFlagVector')
       path.classList.add('block', 'lightning')
       return
     }
 
-    if (idBanner === 'portfolio') {
+    if (dataBanner === 'portfolio') {
       banner.classList.remove('hidden')
       banner.classList.add('block')
       return
     }
   })
-
 
   menu?.addEventListener('contextmenu', e => {
     e.preventDefault()
