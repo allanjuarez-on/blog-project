@@ -15,12 +15,12 @@ export function getIconByName({
   modules: AstroModule
   customExp?: RegExp
 }): AstroComponent {
-  const cleanIconName = iconName.trim().toLocaleLowerCase()
+  const cleanIconName = iconName.trim().toLowerCase()
   let iconComponent = null
 
   Object.entries(modules).forEach(([path, value]) => {
     const newRegExp = customExp ?? defaultRegExp
-    const fileName = path.split('/').at(-1)?.trim().toLocaleLowerCase().replace(newRegExp, '')
+    const fileName = path.split('/').at(-1)?.trim().toLowerCase().replace(newRegExp, '')
     if (fileName === cleanIconName) {
       iconComponent = value.default
       return

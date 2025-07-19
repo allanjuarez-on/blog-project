@@ -13,18 +13,95 @@ thumbnail:
   img: src/assets/default-image.svg
   description: Default
 relatedPosts:
+  - article-3
+  - custom-slug-expojs-tutorial-2025
   - article-2
+  - css-custom-properties
 ---
 
-# Content article
+import Paragraph from '@components/Paragraph.astro'
+import CodeBlock from '@components/CodeBlock.astro'
+export const components = { p: Paragraph }
+
+[Cuando se exporta el objeto "components" este asigna sitaxis markdown a un componente de Astro para que este mismo acture con su propia logica]: #
 
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae nemo non possimus incidunt corporis sequi. Voluptatibus ea aliquam dignissimos odit earum voluptates atque, voluptatem quibusdam aut, et vel totam tenetur!
-Praesentium, natus? Sed, reprehenderit necessitatibus optio minus, hic saepe quam repellendus id neque aliquid eius, voluptatum possimus. Temporibus sit obcaecati veritatis incidunt et dolore, at cupiditate velit esse. Ea, odit.
+Praesentium, natus? Sed, reprehenderit necessitatibus optio minus, hic saepe quam repellendus id neque aliquid eius, voluptatum possimus. Tempaoribus sit obcaecati veritatis incidunt et dolore, at cupiditate velit esse. Ea, odit.
 Itaque consequatur accusamus fuga sit earum possimus qui, officia repellat explicabo iusto necessitatibus placeat perferendis ex illo ratione nostrum beatae officiis neque tenetur molestias? Rem quasi quo quidem dignissimos doloremque!
+
 Vel nobis qui quo molestias dolorum? Dolorum quis similique sint, debitis voluptate deleniti officia ut eos dolor ad illum, molestiae maxime eaque aliquam fugiat deserunt dolorem harum nobis rem. Tempore!
 Sed, enim. Dolores incidunt voluptatum consequatur officiis laborum? Ipsum ad consequatur optio. Reiciendis praesentium, odio beatae aliquid voluptatum eligendi numquam voluptatem nisi dicta, molestiae culpa atque, minima cum? Aperiam, similique!
+
+export const greet = `
+function greet(name) {
+  return \`Hello, \${name}!\ bienvenido a nuestro tutorial de ExpoJS 2025.\`;
+}
+
+console.log(greet('World'));
+`
+
+<CodeBlock lang='javascript' code={greet} />
+
 Sunt commodi perferendis, sed rem, nostrum similique doloribus a non, quis harum soluta labore modi! Non, sequi? Perspiciatis sed, facilis unde sapiente, aliquam explicabo porro magni expedita numquam suscipit esse.
 Corporis ea sapiente, magni quidem architecto cupiditate autem a repellat reiciendis! Quas omnis eveniet architecto voluptate quisquam ducimus non incidunt perferendis placeat vel ipsam dignissimos neque fugiat, dolorem doloribus? Impedit!
+
 Reiciendis, nesciunt voluptatibus. Hic nemo minima quibusdam iure quam, asperiores ad deleniti soluta sit similique dolorum natus dolor voluptatibus dignissimos rem quisquam reprehenderit libero! Dicta nobis quisquam veritatis quas. Quis.
+
+export const exampleCSS = `
+  <style>
+    .edge {
+      overflow: hidden;
+      user-select: none;
+    }
+
+    div[data-edge-lb] {
+      border-bottom: 1px solid var(--color-gray-500);
+      border-right: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-rb] {
+      border-bottom: 1px solid var(--color-gray-500);
+      border-right: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-lbr] {
+      border-left: 1px solid var(--color-gray-500);
+      border-bottom: 1px solid var(--color-gray-500);
+      border-right: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-top] {
+      border-top: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-right] {
+      border-right: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-bottom] {
+      border-bottom: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-left] {
+      border-left: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-all] {
+      border: 1px solid var(--color-gray-500);
+    }
+
+    div[data-edge-none] {
+      border: none;
+    }
+
+    @media (width >= 1024px) {
+      .edge:hover:not(:is([edge-hover-disabled])) {
+      border-color: var(--stroke-hover);
+    }
+  </style>
+`
+
+<CodeBlock lang='css' code={exampleCSS} />
+
 Esse voluptatem nobis fugit! Dolores quaerat, eum quibusdam mollitia ut corporis, enim quisquam sapiente minima nesciunt quo natus! Tenetur libero eum delectus expedita distinctio aliquid ea amet aspernatur, neque totam.
 Incidunt molestias sed minima nesciunt? Cumque, dolor tenetur? Sunt veniam nostrum magni quasi amet. Autem pariatur tenetur, quis aliquam, odit blanditiis voluptatibus ab omnis nihil natus, molestias numquam deserunt eius?

@@ -3,11 +3,11 @@ import Default from './icons/Default.astro'
 import { getIconByName } from '@utils/get-dir-components.util'
 import type { AstroModule } from '@custom-types/global'
 
-const { iconName = 'Default', size = '24', exp, ...props } = Astro.props
+const { iconName = 'Default', size = '24', exp, class: className, ...props } = Astro.props
 
 const icons: AstroModule = import.meta.glob('../components/icons/*.astro', { eager: true })
 
 const Component = getIconByName({ iconName: iconName, modules: icons, customExp: exp })
 ---
 
-{!Component ? <Default size={size} {...props} /> : <Component size={size} {...props} />}
+{!Component ? <Default size={size} {...props} /> : <Component size={size} class:list={[className]} {...props} />}

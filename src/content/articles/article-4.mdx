@@ -13,6 +13,19 @@ thumbnail:
 relatedPosts:
   - article-3
   - custom-slug-expojs-tutorial-2025
+  - article-2
+  - css-custom-properties
 ---
 
-# NextJS 15 API
+import Paragraph from '@components/Paragraph.astro'
+export const components = { p: Paragraph }
+
+Un closure es una de las características más poderosas y, a veces, más confusas de JavaScript. Es el mecanismo que permite que una función “recuerde” el entorno en el que fue creada, incluso si se ejecuta en un contexto diferente. Esto significa que una función puede acceder a variables definidas en su ámbito exterior, incluso después de que dicho ámbito haya finalizado su ejecución. Este comportamiento es posible gracias a la forma en que JavaScript maneja el scope léxico, es decir, el contexto donde se declara una función.
+
+Comprender los closures es fundamental para entender cómo funcionan las variables en JavaScript, especialmente cuando se trata de asincronía o programación funcional. Gracias a los closures es posible crear funciones con datos privados, algo que no es nativo del lenguaje como sí lo es en otros lenguajes orientados a objetos. También se utilizan para encapsular lógica, evitar variables globales y crear funciones generadoras de comportamiento dinámico.
+
+Por ejemplo, al crear una función que devuelve otra función, la función interna puede seguir accediendo a las variables locales de la externa, aunque esta ya haya terminado de ejecutarse. Este patrón es muy común en JavaScript y se emplea, entre otras cosas, para crear contadores privados, controlar el acceso a datos o mantener estado entre ejecuciones.
+
+Sin embargo, los closures también pueden provocar errores si no se entienden bien. Uno de los más comunes es mantener en memoria variables que ya no se necesitan, lo que puede causar fugas de memoria, especialmente en aplicaciones grandes o cuando se trabaja con muchos eventos. Por eso, es importante entender que mientras una función con closure exista, su entorno también seguirá existiendo en memoria.
+
+En resumen, los closures permiten escribir código más limpio, organizado y seguro. Aunque al principio pueden parecer complejos, dominarlos ofrece una gran ventaja al desarrollar con JavaScript y permite aprovechar todo el potencial del lenguaje de manera efectiva.

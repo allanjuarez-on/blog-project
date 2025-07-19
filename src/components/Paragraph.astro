@@ -1,0 +1,7 @@
+---
+const { ...props } = Astro.props
+---
+
+<p class='mb-[calc(1rem*2)] leading-normal tracking-custom' {...props}>
+  <slot />
+</p>

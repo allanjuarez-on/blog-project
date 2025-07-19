@@ -111,6 +111,8 @@
   --color-translucent: hsl(0, 0%, 0% / 0%);
 
   --color-lightning: linear-gradient(to right, var(--color-gray-50), var(--color-gray-600));
+
+  --tracking-custom: 0.05em;
 }
 
 @layer base {
@@ -136,5 +138,13 @@
 
   .scrollbar::-webkit-scrollbar-thumb {
     background-color: transparent;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
