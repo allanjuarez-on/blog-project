@@ -1,8 +1,9 @@
 ---
 import { Image } from 'astro:assets'
-import CardArticle from '@components/CardArticle.astro'
+// import ExternalSection from '@components/blog/ExternalSection.astro'
+// import ArticleSlider from '@components/blog/ArticleSlider.astro'
+import Heading from '@components/blog/Heading.astro'
 import Link from '@components/Link.astro'
-import Icon from '@components/Icon.astro'
 import { formatPubDate } from '@utils/date'
 import type { ImageMetadata } from 'astro'
 
@@ -35,20 +36,21 @@ const {
 const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateStyle: 'full' } })
 ---
 
-<article>
-  <div class='h-80 mb-16 flex justify-center'>
+<article id='LayoutArticle' class='relative overflow-hidden'>
+  <div class='h-80 mb-8 flex justify-center'>
     <Image src={cover.src} alt={cover.alt} class='max-w-[1024px] w-full h-full object-cover' />
   </div>
   <div class='max-w-[75ch] mx-auto px-4 pb-16'>
-    <section class='mb-16'>
-      <h1 class='text-2xl text-center font-semibold mb-2'>{title}</h1>
-      <div class='flex flex-col gap-2 mb-2'>
-        <div class='flex justify-center items-center gap-2 text-gray-50-50'>
+    <section class='mb-16 flex flex-col gap-4'>
+      <Heading class='mb-2'>
+        {title}
+      </Heading>
+      <div class='mb-2 flex flex-col gap-2 text-gray-400'>
+        <div class='flex flex-col justify-center items-center gap-2'>
           <time datetime={pubDate.toISOString().split('T')[0]}>{date}</time>
-          <span>•</span>
           <span>{readingTime}</span>
         </div>
-        <div class='flex justify-center items-center gap-2 text-gray-50-50'>
+        <div class='flex justify-center items-center gap-2'>
           <span>Por</span>
           <div class='flex gap-[1ch]'>
             {
@@ -56,7 +58,7 @@ const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateS
                 <Link
                   type='external'
                   href={`https://www.linkedin.com/in/${author.id}/`}
-                  class='text-sky-400 hover:underline text-base font-medium'>{`@${author.id}`}</Link>
+                  class='font-medium text-base text-azure hover:underline'>{`@${author.id}`}</Link>
               ))
             }
           </div>
@@ -66,109 +68,32 @@ const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateS
     <section class='mb-32'>
       <slot />
     </section>
-    <aside class='mt-16'>
-      <h4 class='text-lg font-semibold mb-4'>Artículos relacionados.</h4>
-      <div class='slider-wrapper w-full'>
-        <div class='relative mb-7'>
-          <div
-            class='hidden absolute top-0 left-0 z-2 h-full w-[15%] pointer-events-none bg-linear-to-l from-transparent to-gray-1000'
-            data-shadow='left'>
-          </div>
-          <div
-            id='SliderTrack'
-            class='flex gap-4 w-full overflow-x-auto snap-x snap-mandatory no-scrollbar'>
-            {
-              relatedArticles.map(article => (
-                // snap-mandatory sirve para que los artículos se alineen correctamente al hacer scroll
-                // snap-x permite el scroll horizontal
-                // snap-center permite que cada artículo se centre en el viewport al hacer scroll
-                <Link type='local' href={`${article.id}`} class='block min-w-[18rem]  snap-center'>
-                  <CardArticle {...article.data} />
-                </Link>
-              ))
-            }
-          </div>
-          <div
-            class='absolute top-0 right-0 z-2 h-full w-[15%] pointer-events-none bg-linear-to-r from-transparent to-gray-1000'
-            data-shadow='right'>
-          </div>
-        </div>
-        <div class='relative flex justify-between px-4'>
-          <button disabled id='Back' class='opacity-50'>
-            <Icon iconName='BackArrow' />
-          </button>
-          <button id='Forward'>
-            <Icon iconName='ForwardArrow' />
-          </button>
-        </div>
-      </div>
-    </aside>
+    <!-- <ExternalSection>
+      <h4 slot='title' class='mb-4 font-semibold text-lg'>Artículos relacionados.</h4>
+      <ArticleSlider slot='content' content={relatedArticles} />
+    </ExternalSection> -->
   </div>
 </article>
 
 <script>
   import hljs from 'highlight.js'
-  import 'highlight.js/styles/github-dark.css'
+  import 'highlight.js/styles/sunburst.css'
 
+  const layoutArticle = document.querySelector('#LayoutArticle')
+  const headings = layoutArticle?.querySelectorAll('.heading:not(h1)')
+
+  // A cada elemento Heading se asigna un enlace ancla basandose al atributo href de su link interno generado por los plugins rehypeSlug y rehypeAutolinkHeadings.
+  headings?.forEach(heading => {
+    if (!heading) return
+
+    const nameAnchor = heading.querySelector('a')?.getAttribute('href') || '#' + crypto.randomUUID()
+
+    const anchor = document.createElement('a')
+    anchor.setAttribute('name', `${nameAnchor?.split('#')[1]}`)
+
+    heading.insertAdjacentElement('beforebegin', anchor)
+  })
+
+  // Da estilos globales a todos los elementos pre y block de este archivo.
   hljs.highlightAll()
-  
-  const sliderTrack = document.querySelector('#SliderTrack')
-  const backBtn = document.querySelector('#Back')
-  const forwardBtn = document.querySelector('#Forward')
-  const shadowLeft = document.querySelector('[data-shadow="left"]')
-  const shadowRight = document.querySelector('[data-shadow="right"]')
-
-  const sliderItems = sliderTrack?.querySelectorAll('a').length || 0
-
-  console.log('Slider items:', sliderItems)
-
-  // Si no hay artículos relacionados, se ocultan todos los botones y las sombras
-  if (sliderItems <= 1) {
-    backBtn?.classList.add('hidden')
-    forwardBtn?.classList.add('hidden')
-    shadowLeft?.classList.add('hidden')
-    shadowRight?.classList.add('hidden')
-  }
-
-  if (backBtn && forwardBtn && sliderTrack && sliderItems > 1) {
-    backBtn.addEventListener('click', () => {
-      sliderTrack.scrollBy({ left: -280, behavior: 'smooth' })
-    })
-
-    forwardBtn.addEventListener('click', () => {
-      sliderTrack.scrollBy({ left: 280, behavior: 'smooth' })
-    })
-
-    let scrollLeft = 0
-
-    sliderTrack.addEventListener('scroll', () => {
-      const scrollWidth = sliderTrack.scrollWidth
-      const clientWidth = sliderTrack.clientWidth
-      scrollLeft = sliderTrack.scrollLeft
-
-      console.log('Scroll left init:', scrollLeft)
-
-      // Verificamos si el scroll está en un estado inicial o en movimiento para mostrar/ocultar la sombra izquierda y el botón de retroceso
-      if (scrollLeft <= 0) {
-        shadowLeft?.classList.add('hidden')
-        backBtn.setAttribute('disabled', 'true')
-        backBtn?.classList.add('opacity-50')
-      } else {
-        backBtn.removeAttribute('disabled')
-        backBtn?.classList.remove('opacity-50')
-        shadowLeft?.classList.remove('hidden')
-      }
-
-      // Verificamos si el scroll llego al final para mostrar/ocultar la sombra derecha y el boton de avance
-      if (scrollLeft + clientWidth >= scrollWidth) {
-        forwardBtn.setAttribute('disabled', 'true')
-        forwardBtn?.classList.add('opacity-50')
-        shadowRight?.classList.add('hidden')
-      } else {
-        forwardBtn.removeAttribute('disabled')
-        forwardBtn?.classList.remove('opacity-50')
-        shadowRight?.classList.remove('hidden')
-      }
-    })
-  }
 </script>

@@ -19,7 +19,7 @@ const { pageTitle } = Astro.props
     <meta name='generator' content={Astro.generator} />
     <title>{pageTitle}</title>
   </head>
-  <body class='relative'>
+  <body class='relative max-w-[1440px] mx-auto'>
     <Navigation links={mainMenuLinks} />
     <main class="relative">
       <slot />

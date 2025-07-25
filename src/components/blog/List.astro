@@ -1,0 +1,19 @@
+<ul>
+  <slot />
+</ul>
+
+<style>
+  ul {
+    --paragraph-size: clamp(var(--text-base), 0.179vw + 0.964rem, var(--text-md));
+    list-style: square;
+    list-style-position: inside;
+    margin-bottom: calc(var(--paragraph-size) * 2);
+    color: var(--color-gray-300);
+    font-size: var(--paragraph-size);
+  }
+
+  li {
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-wide);
+  }
+</style>
