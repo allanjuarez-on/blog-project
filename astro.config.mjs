@@ -2,6 +2,8 @@
 import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import mdx from '@astrojs/mdx'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeSlug from 'rehype-slug'
 import tailwindcss from '@tailwindcss/vite'
 import { remarkReadingTime } from './src/utils/remark-reading-time.ts'
 
@@ -37,4 +39,10 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkReadingTime],
   },
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkReadingTime],
+      rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]],
+    }),
+  ],
 })

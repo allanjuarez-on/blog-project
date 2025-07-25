@@ -20,6 +20,7 @@ relatedPosts:
   - article-2
 ---
 
+import CodeBlock from '@components/blog/CodeBlock.astro'
 import Heading2 from '@components/blog/Heading2.astro'
 import Heading3 from '@components/blog/Heading3.astro'
 import Paragraph from '@components/blog/Paragraph.astro'
@@ -34,6 +35,10 @@ Si alguna vez has querido crear una app para iOS y Android sin complicarte la vi
 ## 1. Cero configuración nativa
 
 Con Expo, puedes iniciar un proyecto móvil desde tu terminal con tan solo un comando:
+
+export const snippet = 'npx create-expo-app my-ap'
+
+<CodeBlock lang='bash' code={snippet} />
 
 No necesitas instalar Xcode, Android Studio, ni preocuparte por archivos nativos. Es ideal si vienes del mundo web o simplemente quieres enfocarte en escribir código, no en configurar entornos.
 
@@ -84,3 +89,49 @@ Expo tiene una comunidad vibrante y un ecosistema que crece cada mes. Algunas he
 - Soporte directo para Firebase, Stripe, Sentry, y muchas integraciones más
 
 ## 7. Ejemplo practico:
+
+export const expoExample = `
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, View, Text, StyleSheet } from 'react-native';
+import { Camera } from 'expo-camera';
+
+export default function CameraExample() {
+const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+const cameraRef = useRef<Camera | null>(null);
+
+useEffect(() => {
+  (async () => {
+  const { status } = await Camera.requestCameraPermissionsAsync();
+  setHasPermission(status === 'granted');
+  })();
+}, []);
+
+const takePhoto = async () => {
+  if (cameraRef.current) {
+    const photo = await cameraRef.current.takePictureAsync();
+    console.log('📷 Foto tomada:', photo.uri);
+  }
+};
+
+if (hasPermission === null) {
+  return <Text>Solicitando permiso para usar la cámara...</Text>;
+}
+
+if (hasPermission === false) {
+  return <Text>Permiso denegado para usar la cámara.</Text>;
+}
+
+return (
+  <View style={styles.container}>
+    <Camera ref={cameraRef} style={styles.camera} />
+    <Button title='Tomar Foto' onPress={takePhoto} />
+  </View>
+); }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  camera: { flex: 1 },
+});
+`.trim()
+
+<CodeBlock fileName='app' lang='tsx' code={expoExample} />

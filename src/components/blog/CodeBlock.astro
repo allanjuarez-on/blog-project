@@ -1,0 +1,43 @@
+---
+import CopyButton from "./CopyButton.astro"
+
+const { fileName, lang, code, ...props } = Astro.props
+---
+
+<div class='code-block' {...props}>
+  <div class='code-block-header'>
+    <span>{`${fileName ?? ''}.${lang}`}</span>
+    <CopyButton code={code} lang={lang} aria-label='Copiar código' />
+  </div>
+  <!-- class={`${lang ? `language-${lang}` : ''}`} -->
+  <pre><code>{code}</code></pre>
+</div>
+
+<style>
+  .code-block, .code-block-header {
+    border-style: solid;
+    border-color: var(--color-gray-600);
+  }
+
+  .code-block {
+    margin-bottom: calc(1rem * 4);
+    border-width: 1px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .code-block-header {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-bottom-width: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Para que pueda cambiar el elemento code con la dependencia highlight.js es accediendo a la clase hljs */
+  code.hljs {
+    width: 100%;
+    padding: 1.5rem !important;
+  }
+</style>
