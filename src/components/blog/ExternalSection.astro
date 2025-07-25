@@ -1,0 +1,12 @@
+---
+interface Props {
+  class?: string
+}
+
+const { class: className, ...props } = Astro.props
+---
+
+<aside class:list={['mt-16', className]} {...props}>
+  <slot name='title' />
+  <slot name='content' />
+</aside>

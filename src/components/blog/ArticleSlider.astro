@@ -1,0 +1,130 @@
+---
+import CardArticle from '@components/blog/ArticleCard.astro'
+import Link from '@components/Link.astro'
+import Icon from '@components/Icon.astro'
+
+interface Props {
+  class?: string | null
+  content: RelatedArticles[]
+}
+
+interface RelatedArticles {
+  id: string
+  data: any
+}
+
+const { content } = Astro.props
+---
+
+<div id='ArticleSlider' class='w-full'>
+  <div class='relative mb-7'>
+    <div
+      class='hidden absolute top-0 left-0 z-2 w-[15%] h-full pointer-events-none bg-linear-to-l from-transparent to-gray-1000'
+      data-shadow='left'>
+    </div>
+    <div
+      id='SliderTrack'
+      class='snap-x snap-mandatory w-full flex gap-4 overflow-x-auto no-scrollbar'>
+      {
+        content.map(
+          article => (
+            (
+              // snap-mandatory sirve para que los artículos se alineen correctamente al hacer scroll
+              // snap-x permite el scroll horizontal
+              // snap-center permite que cada artículo se centre en el viewport al hacer scroll
+              <Link type='local' href={`${article.id}`} class='snap-center min-w-[16rem] w-full max-w-[24rem] lg:min-w-[24rem]'>
+                <CardArticle {...article.data} />
+              </Link>
+            )
+          ),
+        )
+      }
+    </div>
+    <div
+      class='absolute top-0 right-0 z-2 w-[15%] h-full pointer-events-none bg-linear-to-r from-transparent to-gray-1000'
+      data-shadow='right'>
+    </div>
+  </div>
+  <div class='relative flex justify-between px-4'>
+    <button disabled="true" id='Back' class='opacity-50 cursor-not-allowed'>
+      <Icon iconName='BackArrow' />
+    </button>
+    <button id='Forward' class="lg:cursor-pointer">
+      <Icon iconName='ForwardArrow' />
+    </button>
+  </div>
+</div>
+
+<script>
+  function initSlider() {
+    const articleSlider = document.querySelector('#ArticleSlider')
+    if (!articleSlider) return
+
+    const trackSlider = articleSlider.querySelector('#SliderTrack')
+    if (!trackSlider) return
+
+    const sliderItems = trackSlider.querySelectorAll('#SliderTrack > a').length
+    const backBtn = articleSlider.querySelector('#Back')
+    const forwardBtn = articleSlider.querySelector('#Forward')
+    const shadowLeft = articleSlider.querySelector('[data-shadow="left"]')
+    const shadowRight = articleSlider.querySelector('[data-shadow="right"]')
+
+    const isExistElements = backBtn && forwardBtn && shadowLeft && shadowRight
+
+    // Si no hay artículos relacionados o solo existe uno solo, se ocultan todos los botones y las sombras
+    if (sliderItems <= 1 && isExistElements) {
+      backBtn.classList.add('hidden')
+      forwardBtn.classList.add('hidden')
+      shadowLeft.classList.add('hidden')
+      shadowRight.classList.add('hidden')
+    }
+
+     if (!(sliderItems > 1 && isExistElements)) return
+
+    backBtn.addEventListener('click', () => {
+      trackSlider.scrollBy({ left: -1, behavior: 'smooth' })
+    })
+
+    forwardBtn.addEventListener('click', () => {
+      trackSlider.scrollBy({ left: 1, behavior: 'smooth' })
+    })
+
+    let scrollLeft = 0
+
+    trackSlider.addEventListener('scroll', () => {
+      const scrollWidth = trackSlider.scrollWidth // Ancho total de todo el contenido visible y no visible (overflow) de un elemento; incluye solo paddings e ignora margins y borders.
+      const clientWidth = trackSlider.clientWidth // Ancho total de todo el contenido que SOLO es visible en pantalla de un elemento; incluye solo paddings e ignora margins, borders y la scrollbar.
+
+      // El scrollLeft se ira actualizando para determinar si el slider puede ir hacia atras o adelante.
+      scrollLeft = trackSlider.scrollLeft
+
+      // Verifica si el scroll está en un estado inicial positivo/negativo o en movimiento para mostrar/ocultar la sombra izquierda y el botón de retroceso
+      if (scrollLeft <= 0) {
+        backBtn.setAttribute('disabled', 'true')
+        backBtn.classList.add('opacity-50', 'cursor-not-allowed')
+        backBtn.classList.remove('lg:cursor-pointer')
+        shadowLeft.classList.add('hidden')
+      } else {
+        backBtn.removeAttribute('disabled')
+        backBtn.classList.remove('opacity-50', 'cursor-not-allowed')
+        backBtn.classList.add('lg:cursor-pointer')
+        shadowLeft.classList.remove('hidden')
+      }
+
+      // Verifica si el scroll llego al final para mostrar/ocultar la sombra derecha y el boton de avance
+      if (scrollLeft + clientWidth >= scrollWidth) {
+        forwardBtn.setAttribute('disabled', 'true')
+        forwardBtn.classList.add('opacity-50', 'cursor-not-allowed')
+        forwardBtn.classList.remove('lg:cursor-pointer')
+        shadowRight.classList.add('hidden')
+      } else {
+        forwardBtn.removeAttribute('disabled')
+        forwardBtn.classList.remove('opacity-50', 'cursor-not-allowed')
+        forwardBtn.classList.add('lg:cursor-pointer')
+        shadowRight.classList.remove('hidden')
+      }
+    })
+  }
+
+  initSlider()
+</script>
