@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets'
-// import ExternalSection from '@components/blog/ExternalSection.astro'
-// import ArticleSlider from '@components/blog/ArticleSlider.astro'
+import ExternalSection from '@components/blog/ExternalSection.astro'
+import ArticleSlider from '@components/blog/ArticleSlider.astro'
 import Heading from '@components/blog/Heading.astro'
 import Link from '@components/Link.astro'
 import { formatPubDate } from '@utils/date'
@@ -68,10 +68,10 @@ const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateS
     <section class='mb-32'>
       <slot />
     </section>
-    <!-- <ExternalSection>
+    <ExternalSection>
       <h4 slot='title' class='mb-4 font-semibold text-lg'>Artículos relacionados.</h4>
       <ArticleSlider slot='content' content={relatedArticles} />
-    </ExternalSection> -->
+    </ExternalSection>
   </div>
 </article>
 
