@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content'
 import BlogLayout from '@layouts/BlogLayout.astro'
 import CategoryFilter from '@components/CategoryFilters.astro'
-import BlogContent from '@components/BlogContent.astro'
+import BlogContent from '@components/blog/BlogContent.astro'
 
 const categories = (await getCollection('categories')).map(raw => raw.data)
 

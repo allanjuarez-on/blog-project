@@ -1,0 +1,17 @@
+---
+const { ...props } = Astro.props
+---
+
+<p class:list={['paragraph']} {...props}>
+  <slot />
+</p>
+
+<style>
+  .paragraph {
+    --paragraph-size: clamp(var(--text-base), 0.179vw + 0.964rem, var(--text-md));
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-wide);
+    font-size: var(--paragraph-size);
+    margin-bottom: calc(var(--paragraph-size) * 2);
+  }
+</style>

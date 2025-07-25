@@ -81,6 +81,17 @@
     'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono: 'ibm-plex-mono';
 
+  /* TEXT */
+  --text-*: initial;
+  --text-base: 1rem; /* 16px */
+  --text-md: 1.125rem; /* 18px */
+  --text-lg: 1.25rem; /* 20px */
+  --text-xl: 1.5rem; /* 24px */
+  --text-2xl: 1.75rem; /* 28px */
+  --text-3xl: 2rem; /* 32px */
+  --text-4xl: 2.25rem; /* 36px */
+  --text-5xl: 2.5rem; /* 40px */
+
   /* COLORS */
   --color-gray-1000: hsl(0 0% 0%);
   --color-gray-975: hsl(210 14% 3%);
@@ -110,10 +121,20 @@
   --color-gray-50-4: hsl(210 17% 98% / 4%);
   --color-translucent: hsl(0, 0%, 0% / 0%);
 
+  --color-azure: hsl(210 100% 52%);
+
   --color-lightning: linear-gradient(to right, var(--color-gray-50), var(--color-gray-600));
+
+  --tracking-custom: 0.05em;
 }
 
 @layer base {
+
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-gray-300)
+  }
+
   svg {
     max-width: 100%;
     height: auto;
@@ -136,5 +157,13 @@
 
   .scrollbar::-webkit-scrollbar-thumb {
     background-color: transparent;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

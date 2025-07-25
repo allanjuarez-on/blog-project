@@ -1,0 +1,13 @@
+<h1 class:list={['heading heading-1']}>
+  <slot />
+</h1>
+
+<style>
+  .heading-1 {
+    font-size: clamp(var(--text-xl), 1.429vw + 1.214rem, var(--text-5xl));
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    line-height: 1.4;
+    color: var(--color-gray-50);
+  }
+</style>
