@@ -1,0 +1,155 @@
+---
+import Icon from '@components/Icon.astro'
+
+const { code, ...props } = Astro.props
+// Se genero un ID para que cada boton tenga su propia logica y no exista algún error de ID duplicados.
+// Math.random().toString(36).substr(2, 9)
+const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
+---
+
+<button id={buttonId} class='group flex lg:cursor-pointer' {...props}>
+  <Icon iconName='Copy' class='bg-gray-1000' />
+  <span
+    class='hidden absolute bottom-[112%] right-[0] px-2 py-0.5 rounded-full border-1 border-gray-600 text-nowrap text-gray-50 bg-gray-1000/50 backdrop-blur-sm group-hover:lg:block'
+    >Copiar código</span
+  >
+</button>
+
+<script is:inline define:vars={{ codeData: code, buttonId }}>
+  const layoutArticle = document.querySelector('#LayoutArticle')
+  let isClickable = true
+
+  // Crea un nuevo componenete de notificación con id, mensaje y estilos personalizables.
+  function initNotificationComponent({
+    message = 'Notification',
+    id = 'Notification',
+    customStyles = null,
+  }) {
+    const container = document.createElement('div')
+    const text = document.createElement('span')
+    container.setAttribute('id', '#' + id)
+    text.textContent = message
+    container.appendChild(text)
+
+    const defaultStyles = [
+      'fixed',
+      'right-0',
+      'bottom-0',
+      'z-2',
+      'w-full',
+      'p-4',
+      'bg-gray-1000/50',
+      'text-center',
+      'text-gray-50',
+      'backdrop-blur-3xl',
+      'transition-transform',
+      'duration-200',
+      'ease-in-out',
+      'lg:bottom-2',
+      'lg:right-2',
+      'lg:w-auto',
+      'lg:rounded-full',
+      'lg:border-1',
+      'lg:border-gray-600',
+    ]
+
+    const styles = new Set([...customStyles, ...defaultStyles])
+
+    container.classList.add(...styles)
+    return container
+  }
+
+  // Muestra en pantalla un componente de notificación de tipo "error".
+  function showErrorNotification(errorMessage) {
+    let NotificationErrorComponent = layoutArticle.querySelector('#NotificationError')
+    // Nullish coalesing operator
+    // Verifica si la variable es null o undefined si es asi, se le asignara el valor del lado derecho.
+    // ES equivalente a -> if (NotificationErrorComponent === null || NotificationErrorComponent === undefined)
+    NotificationErrorComponent ??= initNotificationComponent({
+      message: errorMessage,
+      id: 'NotificationError',
+      customStyles: ['text-red-600'],
+    })
+
+    layoutArticle.appendChild(NotificationErrorComponent)
+
+    // La notifiación solo se mostrara por 3s, y despues de 300ms se eliminara del DOM.
+    setTimeout(() => {
+      NotificationErrorComponent.classList.replace('lg:bottom-2', 'lg:bottom-0')
+      NotificationErrorComponent.classList.add('translate-y-full')
+
+      setTimeout(() => {
+        layoutArticle.removeChild(NotificationErrorComponent)
+      }, 300)
+    }, 3000)
+  }
+
+  // Muestra en pantalla un componente de notificación de tipo "success" y se sincroniza con el componente tag.
+  function showSuccessNotification(message, tag) {
+    let NotificationSuccessComponent = layoutArticle.querySelector('#NotificationSuccess')
+    NotificationSuccessComponent ??= initNotificationComponent({
+      message: message,
+      id: 'NotificationSuccess',
+      customStyles: ['text-green-600']
+    })
+
+    layoutArticle.appendChild(NotificationSuccessComponent)
+
+    const tagName = tag.textContent
+    tag.textContent = 'Copiado'
+    tag.classList.remove('group-hover:lg:block')
+    tag.classList.replace('hidden', 'block')
+
+    setTimeout(() => {
+      NotificationSuccessComponent.classList.replace('lg:bottom-2', 'lg:bottom-0')
+      NotificationSuccessComponent.classList.add('translate-y-full')
+      tag.classList.replace('block', 'hidden')
+      tag.classList.add('group-hover:lg:block')
+      tag.textContent = tagName
+
+      setTimeout(() => {
+        layoutArticle.removeChild(NotificationSuccessComponent)
+      }, 300)
+    }, 3000)
+  }
+
+  // La function Throttle regula la cantidad de clicks del boton copiar.
+  function throttle(callback, delay) {
+    return function (...args) {
+      if (!isClickable) {
+        // Verifica si el segundo argumento existe y es un HTMLElement
+        if (args[1] && args[1] instanceof HTMLElement) {
+          args[1].textContent = 'Espera un momento; por favor'
+        }
+        return
+      }
+
+      isClickable = false
+      callback(...args)
+
+      setTimeout(() => {
+        isClickable = true
+      }, delay)
+    }
+  }
+
+  function copyToClipboard() {
+    const copyButton = document.getElementById(buttonId)
+    const copyButtonTag = copyButton.querySelector('span')
+    if (!copyButton || !copyButtonTag) return
+
+    copyButton.addEventListener('click', async function () {
+      try {
+        // throw Error('No pude copiar el codigo; intentalo más tarde.')
+        await navigator.clipboard.writeText(codeData)
+        const successNotification = throttle(showSuccessNotification, 3300)
+        successNotification('Copiado al portapapeles', copyButtonTag)
+      } catch (err) {
+        const errorNotificación = throttle(showErrorNotification, 3300)
+        errorNotificación(err.message)
+      }
+    })
+  }
+
+  copyToClipboard()
+</script>
