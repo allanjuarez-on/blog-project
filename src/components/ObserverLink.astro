@@ -1,13 +1,29 @@
 ---
-const { ref = '/', label = 'Link', class: className, ...props } = Astro.props
+const { ref = '/', type = 'external', class: className, ...props } = Astro.props
 ---
 
-<a
-  href={ref}
-  class:list={[
-    'text-gray-50/50 no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50',
-    className,
-  ]}
-  {...props}>
-  {label}
-</a>
+{
+  type !== 'local' ? (
+    <a
+      href={ref}
+      class:list={[
+        'w-fit whitespace-nowrap no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50 text-gray-50/50 hover:underline hover:text-gray-50',
+        className,
+      ]}
+      target='_blank'
+      rel='noopener noreferrer'
+      {...props}>
+      <slot />
+    </a>
+  ) : (
+    <a
+      href={ref}
+      class:list={[
+        'w-fit whitespace-nowrap no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50 text-gray-50/50 hover:underline hover:decoration-gray-50 hover:text-gray-50',
+        className,
+      ]}
+      {...props}>
+      <slot />
+    </a>
+  )
+}

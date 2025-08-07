@@ -3,15 +3,18 @@ import ObserverLink from './ObserverLink.astro'
 import type { PrimitiveLink } from '@custom-types/global'
 
 interface Props {
+  id?: string
+  class?: string | null | undefined
+  type?: string
   routes: Partial<PrimitiveLink>[]
 }
 
-const { routes, ...props } = Astro.props
+const { routes, type, class: className, ...props } = Astro.props
 ---
 
-<section {...props}>
+<section class:list={['w-fit', className]} {...props}>
   <slot name='section-name' />
-  <ul class='flex flex-col gap-4'>
+  <ul class='w-fit flex flex-col gap-4'>
     {
       routes &&
         routes.length >= 1 &&
@@ -19,15 +22,15 @@ const { routes, ...props } = Astro.props
           const dataLink = route.label?.split('')
           dataLink[0] = dataLink[0].toLowerCase()
           return (
-            <li>
+            <li class='w-fit'>
               <ObserverLink
                 ref={route.href}
-                label={route.label}
+                type={type}
                 class='text-gray-50/50'
                 data-value={dataLink?.join('')}
-                data-jeje
-                data-hola='jsksajd'
-              />
+              >
+                {route.label}
+              </ObserverLink>
             </li>
           )
         })
