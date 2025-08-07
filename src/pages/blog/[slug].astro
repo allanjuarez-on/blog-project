@@ -3,7 +3,7 @@ import { render } from 'astro:content'
 import { getCollection } from 'astro:content'
 import { getEntries } from 'astro:content'
 import { getEntry } from 'astro:content'
-import BlogLayout from '@layouts/BlogLayout.astro'
+import Layout from '@layouts/Layout.astro'
 import ArticleLayout from '@layouts/ArticleLayout.astro'
 
 export async function getStaticPaths() {
@@ -47,7 +47,7 @@ const {
 } = article.data
 ---
 
-<BlogLayout pageTitle={title}>
+<Layout pageTitle={title}>
   <ArticleLayout
     title={title}
     pubDate={pubDate}
@@ -57,4 +57,4 @@ const {
     relatedArticles={relatedArticles}>
     <Content />
   </ArticleLayout>
-</BlogLayout>
+</Layout>
