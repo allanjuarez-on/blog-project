@@ -1,42 +1,44 @@
 ---
 import { Image } from 'astro:assets'
-const { class: className, ...props } = Astro.props
+import Link from '@components/Link.astro'
+// import { formatPubDate } from '@utils/date'
+const {href, title, date, tag, thumbnail, class: className, ...props } = Astro.props
 
 const dateFormat = new Intl.DateTimeFormat(undefined, {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
-}).format(props.pubDate)
-const tagName = props.category.id
+}).format(date)
+
+const tagName = tag
   .toLowerCase()
   .split('')
-  .with(0, props.category.id[0].toUpperCase())
+  .with(0, tag[0].toUpperCase())
 ---
 
-<article
-  class:list={[
-    className,
-    'relative px-6 py-10 flex flex-col justify-center items-center min-h-64 border-1 border-gray-600',
-  ]}>
-  <div class='absolute inset-0 bg-gradient-to-t from-black/70 to-transparent'></div>
-  <!-- Image -->
-  <Image
-    src={props.thumbnail.img}
-    alt={props.thumbnail.description}
-    class='overlay object-cover absolute w-full h-full'
-  />
+<Link type='local' href={href} class:list={['group', className]} {...props}>
+  <article class='relative h-full min-h-64 px-4 overflow-hidden flex flex-col justify-center items-center md:px-8 lg:px-12 xl:px-16 group-hover:outline group-hover:outline-gray-600'>
+    <div class='absolute inset-0 bg-gradient-to-t from-black/70 to-transparent'></div>
+    <!-- Image -->
+    <Image
+      src={thumbnail.img}
+      alt={thumbnail.description}
+      class='overlay object-cover absolute w-full h-full'
+    />
 
-  <!-- Tag -->
-  <span class='font-mono z-1 absolute right-0 top-0 px-3 py-2 text-[0.875rem] bg-gray-925'
-    >{tagName}</span
-  >
+    <!-- Tag -->
+    <span
+      class='font-mono z-1 absolute right-2 top-2 rounded-full px-3 py-2 text-[0.875rem] bg-gray-925 group-hover:outline group-hover:outline-gray-600'
+      >{tagName}</span
+    >
 
-  <!-- Content -->
-  <div class='z-1 flex flex-col gap-2 text-center'>
-    <span class='text-[1rem]'>{dateFormat}</span>
-    <h3 class='text-[1.25rem]'>{props.title}</h3>
-  </div>
-</article>
+    <!-- Content -->
+    <div class='z-1 flex flex-col gap-2 text-center'>
+      <span class='lg:text-md'>{dateFormat}</span>
+      <h3 class='text-lg'>{title}</h3>
+    </div>
+  </article>
+</Link>
 
 <style>
   .overlay {

@@ -2,7 +2,6 @@
 import { getCollection, getEntries } from 'astro:content'
 import { Image } from 'astro:assets'
 import ArticleCard from './ArticleCard.astro'
-import Link from '../Link.astro'
 import WithoutContent from '../WithoutContent.astro'
 import NoContent from '@assets/nocontent.svg'
 
@@ -30,8 +29,9 @@ async function getArticles() {
 const allArticles = await getArticles()
 ---
 
-<Image id='NoContent' class='hidden' src={NoContent} alt='' />
-<div id='Content' class='flex flex-col gap-12 z-0 pb-16'>
+<div
+  id='Content'
+  class='z-0 p-[1px] flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4 lg:pt-16 lg:grid-cols-1 lg:gap-12'>
   {
     allArticles &&
       allArticles.length !== 0 &&
@@ -39,16 +39,19 @@ const allArticles = await getArticles()
         return results.status !== 'fulfilled' ? (
           <WithoutContent data-card-category={'no-content'} />
         ) : (
-          <Link
-            type='local'
+          <ArticleCard
             href={`blog/${results.value.id}`}
-            class='hidden'
-            data-card-category={results.value.data.category.id}>
-            <ArticleCard {...results.value.data} />
-          </Link>
+            title={results.value.data.title}
+            date={results.value.data.pubDate}
+            tag={results.value.data.category.id}
+            thumbnail={results.value.data.thumbnail}
+            class='hidden lg:h-80 xl:h-96'
+            data-card-category={results.value.data.category.id}
+          />
         )
       })
   }
+  <Image id='NoContent' class='hidden m-auto' src={NoContent} alt='' />
 </div>
 
 <script>

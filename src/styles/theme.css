@@ -129,10 +129,36 @@
 }
 
 @layer base {
-
   html {
     font-family: var(--font-sans);
-    color: var(--color-gray-300)
+    color: var(--color-gray-300);
+  }
+  
+  body {
+    max-width: 1440px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1;
+  }
+
+  html,
+  body {
+    min-height: 100dvh;
+  }
+
+  body,
+  main,
+  footer {
+    position: relative;
+  }
+
+  header,
+  footer {
+    flex-shrink: 0;
   }
 
   svg {
@@ -148,7 +174,7 @@
   }
 
   .scrollbar::-webkit-scrollbar {
-    height: 2px;
+    height: 1px;
   }
 
   .scrollbar::-webkit-scrollbar-track {

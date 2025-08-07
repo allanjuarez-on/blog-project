@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
-import BlogLayout from '@layouts/BlogLayout.astro'
+import Layout from '@layouts/Layout.astro'
 import CategoryFilter from '@components/CategoryFilters.astro'
 import BlogContent from '@components/blog/BlogContent.astro'
 
@@ -9,11 +9,13 @@ const categories = (await getCollection('categories')).map(raw => raw.data)
 const pageTitle = 'Blog'
 ---
 
-<BlogLayout pageTitle={pageTitle}>
-  <section class='sticky top-0 z-[8]'>
-    <CategoryFilter categories={categories} />
-  </section>
-  <section class='relative px-4'>
-    <BlogContent />
-  </section>
-</BlogLayout>
+<Layout pageTitle={pageTitle}>
+  <div class="mb-32 lg:px-16 lg:flex lg:gap-16 xl:px-32 xl:gap-32">
+    <section class='left-0 z-[8] lg:border-r lg:border-r-gray-600'>
+      <CategoryFilter categories={categories} />
+    </section>
+    <section class='relative w-full px-4 lg:px-16'>
+      <BlogContent />
+    </section>
+  </div>
+</Layout>
