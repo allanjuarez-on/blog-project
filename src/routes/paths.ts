@@ -1,27 +1,20 @@
-import { getBannerByName } from '@utils/get-dir-components.util'
-import type { MainMenuLink, PrimitiveLink, AstroModule } from '@custom-types/global'
+import type { MainMenuLink, PrimitiveLink } from '@custom-types/global'
 
-const modules: AstroModule = import.meta.glob('../components/icons/*.custom.astro', { eager: true })
+// Por el momento esta idea se mantendra oculta.
+// import { getBannerByName } from '@utils/get-dir-components.util'
+// const modules: AstroModule = import.meta.glob('../components/icons/*.custom.astro', { eager: true })
 
 export const mainMenuLinks: MainMenuLink[] = [
   {
     id: 'blog',
     href: '/blog',
     label: 'Blog',
-    // banner: getBannerByName('Word', modules),
   },
   {
     id: 'portfolio',
     href: '/portfolio',
     label: 'Portfolio',
-    // banner: getBannerByName('HighShot', modules),
-  },
-  {
-    id: 'lets-talk',
-    href: '/lets-talk',
-    label: 'Hablemos',
-    // banner: getBannerByName('HighShot', modules),
-  },
+  }
 ]
 
 export const footerLocalLinks: Omit<PrimitiveLink, 'type' | 'description' | 'ctx'>[] = [

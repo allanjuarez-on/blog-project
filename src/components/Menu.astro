@@ -10,16 +10,15 @@ interface Props {
 
 const { links, class: className } = Astro.props
 ---
-
 <div
   id='PrimaryMenu'
   class:list={[
-    '-translate-y-full hidden z-[10] left-0 top-0 right-0 h-0 bg-gray-1000/50 backdrop-blur-3xl',
+    'hidden left-0 top-0 right-0 z-[10] h-0 bg-gray-1000/50 backdrop-blur-3xl -translate-y-full',
     className,
   ]}>
-  <div class='p-4 h-full flex flex-col'>
-    <MenuBar data-edge-all />
-    <MenuList data-edge-lbr class='flex-1' links={links} />
+  <div class='mx-auto h-full max-w-[1440px] flex flex-col lg:px-16 lg:py-8 xl:px-32'>
+    <MenuBar />
+    <MenuList links={links} />
   </div>
 </div>
 
