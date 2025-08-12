@@ -14,32 +14,47 @@ const { links, class: className } = Astro.props
 <nav
   id='PrimaryNavigation'
   class:list={[
-    'sticky top-0 z-[9] py-8 px-6 flex-col bg-gray-1000/50 backdrop-blur-3xl transition-transform duration-200 ease-in-out',
+    'fixed top-0 right-0 left-0 z-[9] mx-auto max-w-[1440px] transition-transform duration-200 ease-in-out lg:top-8 lg:px-16 xl:px-32',
     className,
   ]}>
-  <ButtonOpenMenu />
+  <div class='py-8 px-6 flex bg-gray-1000/50 backdrop-blur-3xl'>
+    <ButtonOpenMenu />
+  </div>
 </nav>
 <Menu links={links} />
 
 <script>
+  const NAVBAR_HIDE_OFFSET = '100%+2rem'
+
   function updateNavClassByScroll() {
     const navComponent = document.querySelector('#PrimaryNavigation')
-    const navComponentHeight = navComponent?.getBoundingClientRect()
-    const height = navComponentHeight?.height || 88
+    
+    if(!navComponent) return
+
+    const navComponentHeight = navComponent.getBoundingClientRect()
+    const height = navComponentHeight.height || 90
     let lastScroll = 0
+
 
     window.addEventListener('scroll', () => {
       const currentScroll = window.scrollY
 
       // Baja
       if (currentScroll > lastScroll && currentScroll > height) {
-        navComponent?.classList.remove('translate-y-0')
-        navComponent?.classList.add('-translate-y-full')
+        navComponent.classList.remove('translate-y-0')
+        navComponent.classList.add(`-translate-y-[calc(${NAVBAR_HIDE_OFFSET})]`)
+        navComponent.firstElementChild?.classList.remove('lg:border', 'lg:border-gray-600')
       }
 
       // Sube
       if (currentScroll < lastScroll) {
-        navComponent?.classList.replace('-translate-y-full', 'translate-y-0')
+        navComponent.classList.replace(`-translate-y-[calc(${NAVBAR_HIDE_OFFSET})]`, 'translate-y-0')
+        navComponent.firstElementChild?.classList.add('lg:border', 'lg:border-gray-600')
+      }
+
+      // Inicio del scroll
+      if (currentScroll === 0) {
+        navComponent.firstElementChild?.classList.remove('lg:border', 'lg:border-gray-600')
       }
 
       lastScroll = currentScroll

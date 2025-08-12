@@ -1,12 +1,7 @@
 ---
 import ButtonCloseMenu from './ButtonCloseMenu.astro'
-import Edge from './Edge.astro'
-
-const { ...props } = Astro.props
 ---
 
-<Edge {...props}>
-  <div class='flex items-center py-6 px-4'>
-    <ButtonCloseMenu />
-  </div>
-</Edge>
+<div class='flex items-center py-8 px-6 lg:border lg:border-b-0 lg:border-gray-600'>
+  <ButtonCloseMenu />
+</div>

@@ -1,22 +1,32 @@
 ---
 import Icon from './Icon.astro'
-
-interface Props {
-  size?: string | number
-}
-
-const { size = '24' } = Astro.props
 ---
 
 <Icon
   class='hidden'
   data-banner-value='blog'
   iconName='BlogFlag'
-  size={size}
   exp={new RegExp('\\.custom.astro$', 'i')}
 />
 
 <style is:global>
+  #BlogFlag {
+    width: 160px;
+    height: auto;
+  }
+
+  @media (width >= 768px) {
+    #BlogFlag {
+      width: 192px;
+    }
+  }
+
+  @media (width >= 1024px) {
+    #BlogFlag {
+      width: 224px;
+    }
+  }
+
   #BlogFlagVector,
   #BlogFlagVectorShadow {
     fill: none;
