@@ -14,10 +14,10 @@ export const mainMenuLinks: MainMenuLink[] = [
     id: 'portfolio',
     href: '/portfolio',
     label: 'Portfolio',
-  }
+  },
 ]
 
-export const footerLocalLinks: Omit<PrimitiveLink, 'type' | 'description' | 'ctx'>[] = [
+export const footerLocalLinks: Partial<PrimitiveLink>[] = [
   {
     href: '/blog',
     label: 'Blog',
@@ -26,29 +26,19 @@ export const footerLocalLinks: Omit<PrimitiveLink, 'type' | 'description' | 'ctx
     href: '/portfolio',
     label: 'Portfolio',
   },
-  {
-    href: '/lets-talk',
-    label: 'Hablemos',
-  },
 ]
 
-export const footerExternalLinks: Omit<PrimitiveLink, 'description'>[] = [
+export const footerExternalLinks: Partial<PrimitiveLink>[] = [
   {
     type: 'external',
-    href: 'https://github.com/',
+    href: 'https://github.com/allanjuarez-on',
     label: 'Github',
     ctx: '_blank',
   },
   {
     type: 'external',
-    href: 'https://www.linkedin.com/',
+    href: 'https://www.linkedin.com/in/edgarallanjuarezcanas/',
     label: 'LinkedIn',
-    ctx: '_blank',
-  },
-  {
-    type: 'external',
-    href: 'https://www.instagram.com/',
-    label: 'Instagram',
     ctx: '_blank',
   },
 ]

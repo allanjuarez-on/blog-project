@@ -9,6 +9,8 @@ export type AstroModule = Record<
 
 export type AstroComponent = ((_props: Record<string, any>) => any) | null
 
+export type AstroNode = HTMLElement | null
+
 export type AstroNodeList = NodeListOf<HTMLElement> | undefined
 
 export interface PrimitiveImageResponsive {
