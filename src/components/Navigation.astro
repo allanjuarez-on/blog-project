@@ -24,7 +24,7 @@ const { links, class: className } = Astro.props
 <Menu links={links} />
 
 <script>
-  const NAVBAR_HIDE_OFFSET = '100%+2rem'
+  const NAVBAR_HIDE_OFFSET = 'calc(100%+2rem)'
 
   function updateNavClassByScroll() {
     const navComponent = document.querySelector('#PrimaryNavigation')
@@ -42,13 +42,13 @@ const { links, class: className } = Astro.props
       // Baja
       if (currentScroll > lastScroll && currentScroll > height) {
         navComponent.classList.remove('translate-y-0')
-        navComponent.classList.add(`-translate-y-[calc(${NAVBAR_HIDE_OFFSET})]`)
+        navComponent.classList.add(`-translate-y-[${NAVBAR_HIDE_OFFSET}]`)
         navComponent.firstElementChild?.classList.remove('lg:border', 'lg:border-gray-600')
       }
 
       // Sube
       if (currentScroll < lastScroll) {
-        navComponent.classList.replace(`-translate-y-[calc(${NAVBAR_HIDE_OFFSET})]`, 'translate-y-0')
+        navComponent.classList.replace(`-translate-y-[${NAVBAR_HIDE_OFFSET}]`, 'translate-y-0')
         navComponent.firstElementChild?.classList.add('lg:border', 'lg:border-gray-600')
       }
 
