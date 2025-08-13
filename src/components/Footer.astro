@@ -1,6 +1,6 @@
 ---
 import LinkList from '@components/LinkList.astro'
-import Link from './Link.astro'
+import ObserverLink from './ObserverLink.astro'
 import { footerLocalLinks, footerExternalLinks } from '@routes/paths'
 
 interface Props {
@@ -10,31 +10,33 @@ interface Props {
 const { class: className, ...props } = Astro.props
 ---
 
-<footer
-  id='PrimaryFooter'
-  class:list={['px-4 pt-32 pb-4 flex flex-col gap-16 lg:px-16 lg:gap-32 xl:px-32 xl:gap-40', className]}
-  {...props}>
-  <div class='flex flex-col gap-16 md:flex-row md:justify-between'>
-    <LinkList id='SiteMap' routes={footerLocalLinks} type='local'>
-      <h5 slot='section-name' class='mb-5 w-fit text-[1.25rem] font-medium'>Mapa del sitio</h5>
-    </LinkList>
-    <LinkList routes={footerExternalLinks} type='external'>
-      <h5 slot='section-name' class='mb-5 w-fit text-[1.25rem] font-medium'>Redes sociales</h5>
-    </LinkList>
-    <div class="hidden w-3/6 h-auto bg-gray-925 md:flex md:justify-center md:items-center">Contenido temporal</div>
-  </div>
-  <div class='flex gap-[1ch] justify-center font-mono text-[0.75rem]'>
-    <span>Construido por</span>
-    <Link href='/' ctx='_blank'> allanjuarez </Link>
+<footer id='PrimaryFooter' class:list={['lg:px-16 xl:px-32', className]} {...props}>
+  <div class='py-4 px-4 flex flex-col gap-32 lg:px-0 lg:pt-32 lg:gap-40 xl:gap-48'>
+    <div class='flex flex-col gap-16 md:flex-row md:gap-24 lg:justify-center lg:gap-32'>
+      <LinkList id='SiteMap' routes={footerLocalLinks} type='local'>
+        <h5 slot='section-name' class='mb-5 w-fit text-[1.25rem] font-medium'>Mapa del sitio</h5>
+      </LinkList>
+      <LinkList routes={footerExternalLinks} type='external'>
+        <h5 slot='section-name' class='mb-5 w-fit text-[1.25rem] font-medium'>Redes sociales</h5>
+      </LinkList>
+    </div>
+    <div class='flex justify-center flex-wrap gap-[1ch] font-mono text-[0.75rem]'>
+      <span>Desarrollado por</span>
+      <ObserverLink ref='https://github.com/allanjuarez-on' type='external'
+        >allanjuarez</ObserverLink
+      >
+    </div>
   </div>
 </footer>
 
 <script>
   import { syncLinkWithUrlPathName } from '@lib/dom/blog'
-  import type { AstroNodeList } from '@custom-types/global'
+  import type { AstroNode, AstroNodeList } from '@custom-types/global'
 
-  const siteMap = document.querySelector('#SiteMap')
-  const linkList: AstroNodeList = siteMap?.querySelectorAll('a[data-value]')
+  const siteMap: AstroNode = document.querySelector('#SiteMap')
 
-  syncLinkWithUrlPathName({ links: linkList, dataAttr: 'value' })
+  if (siteMap) {
+    const linkList: AstroNodeList = siteMap.querySelectorAll('a[data-value]')
+    syncLinkWithUrlPathName({ links: linkList, dataAttr: 'value' })
+  }
 </script>
