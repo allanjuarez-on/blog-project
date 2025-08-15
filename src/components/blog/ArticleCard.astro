@@ -1,23 +1,20 @@
 ---
 import { Image } from 'astro:assets'
 import Link from '@components/Link.astro'
-// import { formatPubDate } from '@utils/date'
-const {href, title, date, tag, thumbnail, class: className, ...props } = Astro.props
+import { formatPubDate } from '@utils/date'
+const { href, title, date, tag, thumbnail, class: className, ...props } = Astro.props
 
-const dateFormat = new Intl.DateTimeFormat(undefined, {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-}).format(date)
+const articleDate = formatPubDate(new Date(date), {
+  locales: 'es-MX',
+  style: { dateStyle: 'long' },
+})
 
-const tagName = tag
-  .toLowerCase()
-  .split('')
-  .with(0, tag[0].toUpperCase())
+const tagName = tag.toLowerCase().split('').with(0, tag[0].toUpperCase())
 ---
 
 <Link type='local' href={href} class:list={['group', className]} {...props}>
-  <article class='relative h-full min-h-64 px-4 overflow-hidden flex flex-col justify-center items-center md:px-8 lg:px-12 xl:px-16 group-hover:outline group-hover:outline-gray-600'>
+  <article
+    class='relative h-full min-h-64 px-4 overflow-hidden flex flex-col justify-center items-center md:px-8 lg:px-12 xl:px-16 lg:group-hover:outline lg:group-hover:outline-gray-600'>
     <div class='absolute inset-0 bg-gradient-to-t from-black/70 to-transparent'></div>
     <!-- Image -->
     <Image
@@ -28,14 +25,14 @@ const tagName = tag
 
     <!-- Tag -->
     <span
-      class='font-mono z-1 absolute right-2 top-2 rounded-full px-3 py-2 text-[0.875rem] bg-gray-925 group-hover:outline group-hover:outline-gray-600'
+      class='z-1 absolute right-2 top-2 rounded-full px-2 py-1 font-mono text-[0.75rem] md:text-[0.875rem] lg:text-base text-gray-1000 bg-gray-50 lg:text-gray-50/50 lg:bg-gray-1000 lg:group-hover:text-gray-1000 lg:group-hover:bg-gray-50'
       >{tagName}</span
     >
 
     <!-- Content -->
     <div class='z-1 flex flex-col gap-2 text-center'>
-      <span class='lg:text-md'>{dateFormat}</span>
-      <h3 class='text-lg'>{title}</h3>
+      <span class='text-gray-300 lg:text-md xl:text-lg'>{articleDate}</span>
+      <h3 class='font-medium text-md md:text-lg lg:text-xl'>{title}</h3>
     </div>
   </article>
 </Link>
