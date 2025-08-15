@@ -8,52 +8,58 @@ interface Props {
   }[]
   class?: string | null | undefined
 }
-
+// sticky top-0
 const { categories, class: className, ...props } = Astro.props
 ---
 
 <div
   id='PrimaryFiltersWrapper'
   class:list={[
-    'mb-8 py-8 px-6 flex flex-row gap-8 overflow-y-hidden overflow-x-auto bg-gray-1000/50 backdrop-blur-3xl scrollbar',
+    'h-full mb-8 py-8 px-6 flex flex-row gap-8 bg-gray-1000/50 backdrop-blur-3xl lg:mb-0 lg:pl-0 lg:pr-32 lg:py-16 lg:flex-col',
     className,
   ]}
   {...props}>
   <ObserverLink
     ref={`?category=${categories[0].name}`}
-    label={categories[0].name.split('').with(0, categories[0].name[0].toUpperCase())}
-    class='text-[1.125rem] font-medium'
+    type='local'
+    class='h-fit text-md lg:text-lg xl:text-xl'
     data-value={categories[0].name}
-  />
-  <div class='flex flex-row gap-8'>
-    {
-      categories.map(category => {
-        // with(index, newElement) | No mutable
-        // Metodo de arrays que retorna una copia exacta del array original solo modificando un indice dado.
-        // .with(0, category.name[0].toUpperCase())
-        const categoryDisplayName = category.name.split('').with(0, category.name[0].toUpperCase())
+    >{categories[0].name.split('').with(0, categories[0].name[0].toUpperCase())}</ObserverLink
+  >
+  <div class='overflow-y-hidden overflow-x-auto lg:overflow-x-hidden scrollbar'>
+    <div id='PrimaryFilters' class='flex flex-row gap-8 lg:flex-col'>
+      {
+        categories.map(category => {
+          // with(index, newElement) | No mutable
+          // Metodo de arrays que retorna una copia exacta del array original solo modificando un indice dado.
+          // .with(0, category.name[0].toUpperCase())
+          const categoryDisplayName = category.name
+            .split('')
+            .with(0, category.name[0].toUpperCase())
 
-        if (category.name !== 'latest') {
-          return (
-            <ObserverLink
-              ref={`?category=${category.name}`}
-              label={categoryDisplayName}
-              class='text-[1.125rem] font-medium'
-              data-value={category.name}
-            />
-          )
-        }
-      })
-    }
+          if (category.name !== 'latest') {
+            return (
+              <ObserverLink
+                ref={`?category=${category.name}`}
+                type='local'
+                class='text-md lg:text-lg xl:text-xl'
+                data-value={category.name}>
+                {categoryDisplayName}
+              </ObserverLink>
+            )
+          }
+        })
+      }
+    </div>
   </div>
 </div>
 
 <script>
   import { markActiveLink } from '@lib/dom/blog'
-  import type { UrlChangeEventData } from '@custom-types/global'
+  import type { AstroNode, AstroNodeList, UrlChangeEventData } from '@custom-types/global'
 
   // Set Url
-  function setUrlByFilterData(filters: NodeListOf<Element> | undefined): void {
+  function setUrlByFilterData(filters: AstroNodeList): void {
     if (!filters) return
 
     filters?.forEach(node => {
@@ -97,7 +103,7 @@ const { categories, class: className, ...props } = Astro.props
   }
 
   // Sync active filter on load
-  function syncActiveFilterOnLoad(filters: NodeListOf<Element> | undefined) {
+  function syncActiveFilterOnLoad(filters: AstroNodeList) {
     if (!filters) return
 
     const url = new URL(window.location.href)
@@ -116,7 +122,7 @@ const { categories, class: className, ...props } = Astro.props
     }
 
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-    primaryFiltersWrapper.scrollTo({ left: 0, behavior: 'smooth' })
+    primaryFiltersInner?.scrollTo({ left: 0, behavior: 'smooth' })
   }
 
   // Sync primary filters
@@ -124,7 +130,7 @@ const { categories, class: className, ...props } = Astro.props
     filters,
     currentUrlCategory,
   }: {
-    filters: NodeListOf<Element> | undefined
+    filters: AstroNodeList
     currentUrlCategory: string | null
   }) {
     if (!filters) return
@@ -145,21 +151,24 @@ const { categories, class: className, ...props } = Astro.props
         parent?.insertBefore(filter, parent.firstElementChild)
       }
     }
-
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-    primaryFiltersWrapper.scrollTo({ left: 0, behavior: 'smooth' })
   }
 
-  const primaryFiltersWrapper = document.querySelector('#PrimaryFiltersWrapper')
-  const primaryFilters = primaryFiltersWrapper?.querySelectorAll('a[data-value]')
+  const primaryFiltersWrapper: AstroNode = document.querySelector('#PrimaryFiltersWrapper')
+  const primaryFiltersInner: AstroNode | undefined = primaryFiltersWrapper?.querySelector(
+    '#PrimaryFiltersWrapper > div',
+  )
+  const allFilters: AstroNodeList | undefined =
+    primaryFiltersWrapper?.querySelectorAll('a[data-value]')
 
-  syncActiveFilterOnLoad(primaryFilters)
-  setUrlByFilterData(primaryFilters)
+  syncActiveFilterOnLoad(allFilters)
+  setUrlByFilterData(allFilters)
 
   window.addEventListener('changeUrl', e => {
     const event = e as CustomEvent<UrlChangeEventData>
     const payload = event.detail.payload
 
-    syncActiveFilterByUrl({ filters: primaryFilters, currentUrlCategory: payload })
+    syncActiveFilterByUrl({ filters: allFilters, currentUrlCategory: payload })
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+    primaryFiltersInner?.scrollTo({ left: 0, behavior: 'smooth' })
   })
 </script>

@@ -11,10 +11,10 @@ const pageTitle = 'Blog'
 
 <Layout pageTitle={pageTitle}>
   <div class="mb-32 lg:px-16 lg:flex lg:gap-16 xl:px-32 xl:gap-32">
-    <section class='left-0 z-[8] lg:border-r lg:border-r-gray-600'>
+    <section class='sticky top-0 left-0 z-[8] lg:block lg:border-r lg:border-r-gray-600'>
       <CategoryFilter categories={categories} />
     </section>
-    <section class='relative w-full px-4 lg:px-16'>
+    <section class='relative w-full px-4 lg:px-16 lg:pr-0 lg:py-16'>
       <BlogContent />
     </section>
   </div>
