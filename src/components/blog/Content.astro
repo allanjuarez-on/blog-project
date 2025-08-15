@@ -31,7 +31,7 @@ const allArticles = await getArticles()
 
 <div
   id='Content'
-  class='z-0 p-[1px] flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4 lg:pt-16 lg:grid-cols-1 lg:gap-12'>
+  class='z-0 flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-1 lg:gap-12'>
   {
     allArticles &&
       allArticles.length !== 0 &&
@@ -56,17 +56,16 @@ const allArticles = await getArticles()
 
 <script>
   import { toggleActiveCard, checkVisibleCards } from '@lib/dom/blog'
-  import type { UrlChangeEventData } from '@custom-types/global'
+  import type { AstroNodeList, UrlChangeEventData } from '@custom-types/global'
 
-  const cards = document.querySelectorAll('a[data-card-category], div[data-card-category]')
+  const cards: AstroNodeList = document.querySelectorAll(
+    'a[data-card-category], div[data-card-category]',
+  )
 
   // Por defecto las etiquetas script en Astro esperan a que sea cargue todo el HTML, de esta manera no se necesita del evento "load"
-  function syncUIByUrlParams(
-    nodes: NodeListOf<Element>,
-    currentFilter?: string | null | undefined,
-  ) {
-    const filter = currentFilter || new URL(window.location.href).searchParams.get('category')
-    toggleActiveCard(nodes, filter)
+  function syncUIByUrlParams(nodes: AstroNodeList, currentFilter?: string | null | undefined) {
+    currentFilter ??= new URL(window.location.href).searchParams.get('category')
+    toggleActiveCard(nodes, currentFilter)
   }
 
   syncUIByUrlParams(cards)
