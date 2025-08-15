@@ -13,11 +13,8 @@ thumbnail:
   img: src/assets/water.jpg
   description: Default
 relatedPosts:
+  - article-2
   - article-3
-  - crear-un-proyecto-con-expojs-y-react-native-2025
-  - article-2
-  - css-custom-properties
-  - article-2
 ---
 
 import CodeBlock from '@components/blog/CodeBlock.astro'
@@ -100,37 +97,38 @@ const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 const cameraRef = useRef<Camera | null>(null);
 
 useEffect(() => {
-  (async () => {
-  const { status } = await Camera.requestCameraPermissionsAsync();
-  setHasPermission(status === 'granted');
-  })();
+(async () => {
+const { status } = await Camera.requestCameraPermissionsAsync();
+setHasPermission(status === 'granted');
+})();
 }, []);
 
 const takePhoto = async () => {
-  if (cameraRef.current) {
-    const photo = await cameraRef.current.takePictureAsync();
-    console.log('📷 Foto tomada:', photo.uri);
-  }
+if (cameraRef.current) {
+const photo = await cameraRef.current.takePictureAsync();
+console.log('📷 Foto tomada:', photo.uri);
+}
 };
 
 if (hasPermission === null) {
-  return <Text>Solicitando permiso para usar la cámara...</Text>;
+return <Text>Solicitando permiso para usar la cámara...</Text>;
 }
 
 if (hasPermission === false) {
-  return <Text>Permiso denegado para usar la cámara.</Text>;
+return <Text>Permiso denegado para usar la cámara.</Text>;
 }
 
 return (
-  <View style={styles.container}>
-    <Camera ref={cameraRef} style={styles.camera} />
-    <Button title='Tomar Foto' onPress={takePhoto} />
-  </View>
+
+<View style={styles.container}>
+  <Camera ref={cameraRef} style={styles.camera} />
+  <Button title='Tomar Foto' onPress={takePhoto} />
+</View>
 ); }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  camera: { flex: 1 },
+container: { flex: 1 },
+camera: { flex: 1 },
 });
 `.trim()
 

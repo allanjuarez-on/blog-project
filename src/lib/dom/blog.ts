@@ -40,10 +40,8 @@ export function syncLinkWithUrlPathName({
   })
 }
 
-export function checkVisibleCards(nodes: NodeListOf<Element>) {
-  if (nodes.length === 0) {
-    return
-  }
+export function checkVisibleCards(nodes: AstroNodeList) {
+  if (!(nodes && nodes.length !== 0)) return
 
   const isDisabled = Array.from(nodes).every(node => node.classList.contains(CardState.HIDE))
   const component = document.querySelector('#NoContent')
@@ -57,10 +55,8 @@ export function checkVisibleCards(nodes: NodeListOf<Element>) {
   }
 }
 
-export function toggleActiveCard(nodes: NodeListOf<Element>, currentFilter: string | null) {
-  if (nodes.length === 0) {
-    return
-  }
+export function toggleActiveCard(nodes: AstroNodeList, currentFilter: string | null | undefined) {
+  if (!(nodes && nodes.length !== 0)) return
 
   nodes.forEach(node => {
     const cardCategory = node.getAttribute('data-card-category')?.toLowerCase()
