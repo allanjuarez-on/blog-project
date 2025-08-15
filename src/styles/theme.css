@@ -132,8 +132,9 @@
   html {
     font-family: var(--font-sans);
     color: var(--color-gray-300);
+    /* scrollbar-gutter: stable; */
   }
-  
+
   body {
     max-width: 1440px;
     margin-inline: auto;
@@ -174,7 +175,7 @@
   }
 
   .scrollbar::-webkit-scrollbar {
-    height: 1px;
+    height: 0.25rem;
   }
 
   .scrollbar::-webkit-scrollbar-track {
@@ -182,7 +183,7 @@
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    background-color: transparent;
+    background-color: var(--color-gray-600);
   }
 
   .no-scrollbar {
