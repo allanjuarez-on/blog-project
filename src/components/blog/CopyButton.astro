@@ -10,7 +10,7 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
 <button id={buttonId} class='group flex lg:cursor-pointer' {...props}>
   <Icon iconName='Copy' class='bg-gray-1000' />
   <span
-    class='hidden absolute bottom-[112%] right-[0] px-2 py-0.5 rounded-full border-1 border-gray-600 text-nowrap text-gray-50 bg-gray-1000/50 backdrop-blur-sm group-hover:lg:block'
+    class='hidden absolute bottom-[112%] right-[0] px-2 py-0.5 rounded-full border-1 border-gray-600 font-mono text-nowrap text-gray-50 bg-gray-1000/50 backdrop-blur-sm group-hover:lg:block'
     >Copiar código</span
   >
 </button>
@@ -27,7 +27,7 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
   }) {
     const container = document.createElement('div')
     const text = document.createElement('span')
-    container.setAttribute('id', '#' + id)
+    container.setAttribute('id', id)
     text.textContent = message
     container.appendChild(text)
 
@@ -45,6 +45,7 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
       'transition-transform',
       'duration-200',
       'ease-in-out',
+      'font-mono',
       'lg:bottom-2',
       'lg:right-2',
       'lg:w-auto',
@@ -85,7 +86,7 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
   }
 
   // Muestra en pantalla un componente de notificación de tipo "success" y se sincroniza con el componente tag.
-  function showSuccessNotification(message, tag) {
+  function showSuccessNotification(message, badge) {
     let NotificationSuccessComponent = layoutArticle.querySelector('#NotificationSuccess')
     NotificationSuccessComponent ??= initNotificationComponent({
       message: message,
@@ -95,17 +96,19 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
 
     layoutArticle.appendChild(NotificationSuccessComponent)
 
-    const tagName = tag.textContent
-    tag.textContent = 'Copiado'
-    tag.classList.remove('group-hover:lg:block')
-    tag.classList.replace('hidden', 'block')
+    const badgeText = badge.textContent
+    badge.textContent = 'Copiado'
+    badge.classList.remove('group-hover:lg:block')
+    badge.classList.replace('hidden', 'block')
+    badge.classList.replace('text-gray-50', 'text-green-600')
 
     setTimeout(() => {
       NotificationSuccessComponent.classList.replace('lg:bottom-2', 'lg:bottom-0')
       NotificationSuccessComponent.classList.add('translate-y-full')
-      tag.classList.replace('block', 'hidden')
-      tag.classList.add('group-hover:lg:block')
-      tag.textContent = tagName
+      badge.classList.replace('block', 'hidden')
+      badge.classList.replace('text-green-600', 'text-gray-50')
+      badge.classList.add('group-hover:lg:block')
+      badge.textContent = badgeText
 
       setTimeout(() => {
         layoutArticle.removeChild(NotificationSuccessComponent)
@@ -116,10 +119,14 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
   // La function Throttle regula la cantidad de clicks del boton copiar.
   function throttle(callback, delay) {
     return function (...args) {
+      const badge = args[1]
+      const badgeText = badge.textContent
+
       if (!isClickable) {
         // Verifica si el segundo argumento existe y es un HTMLElement
-        if (args[1] && args[1] instanceof HTMLElement) {
-          args[1].textContent = 'Espera un momento; por favor'
+        if (badge && badge instanceof HTMLElement) {
+          badge.textContent = 'Espera un momento; por favor'
+          badge.classList.replace('text-green-600', 'text-red-600')
         }
         return
       }
@@ -129,24 +136,26 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
 
       setTimeout(() => {
         isClickable = true
+        badge.textContent = badgeText
+        badge.classList.replace('text-red-600', 'text-gray-50')
       }, delay)
     }
   }
 
   function copyToClipboard() {
     const copyButton = document.getElementById(buttonId)
-    const copyButtonTag = copyButton.querySelector('span')
-    if (!copyButton || !copyButtonTag) return
+    const copyButtonBadge = copyButton.querySelector('span')
+    if (!copyButton || !copyButtonBadge) return
 
     copyButton.addEventListener('click', async function () {
       try {
-        // throw Error('No pude copiar el codigo; intentalo más tarde.')
+        // throw Error('No pude copiar el codigo; intentalo más tarde')
         await navigator.clipboard.writeText(codeData)
         const successNotification = throttle(showSuccessNotification, 3300)
-        successNotification('Copiado al portapapeles', copyButtonTag)
+        successNotification('Copiado al portapapeles', copyButtonBadge)
       } catch (err) {
         const errorNotificación = throttle(showErrorNotification, 3300)
-        errorNotificación(err.message)
+        errorNotificación(err.message, copyButtonBadge)
       }
     })
   }
