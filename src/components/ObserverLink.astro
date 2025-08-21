@@ -7,7 +7,7 @@ const { ref = '/', type = 'external', class: className, ...props } = Astro.props
     <a
       href={ref}
       class:list={[
-        'w-fit whitespace-nowrap no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50 text-gray-50/50 hover:underline hover:text-gray-50',
+        'w-fit whitespace-nowrap no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50 text-gray-50/50 cursor-default lg:hover:underline lg:hover:text-gray-50 lg:cursor-pointer',
         className,
       ]}
       target='_blank'
@@ -19,7 +19,7 @@ const { ref = '/', type = 'external', class: className, ...props } = Astro.props
     <a
       href={ref}
       class:list={[
-        'w-fit whitespace-nowrap no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50 text-gray-50/50 hover:underline hover:decoration-gray-50 hover:text-gray-50',
+        'w-fit whitespace-nowrap no-underline underline-offset-2 decoration-solid decoration-2 decoration-gray-50/50 text-gray-50/50 cursor-default lg:hover:underline lg:hover:decoration-gray-50 lg:hover:text-gray-50 lg:cursor-pointer',
         className,
       ]}
       {...props}>
