@@ -2,46 +2,41 @@
 import Icon from './Icon.astro'
 ---
 
-<Icon
-  class='hidden'
-  data-banner-value='blog'
-  iconName='BlogFlag'
-  exp={new RegExp('\\.custom.astro$', 'i')}
-/>
+<Icon data-icon-value='blog' iconName='Blog' exp={new RegExp('\\.custom.astro$', 'i')} />
 
 <style is:global>
-  #BlogFlag {
-    width: 160px;
+  #Blog {
+    width: 192px;
     height: auto;
   }
 
   @media (width >= 768px) {
-    #BlogFlag {
-      width: 192px;
-    }
-  }
-
-  @media (width >= 1024px) {
-    #BlogFlag {
+    #Blog {
       width: 224px;
     }
   }
 
-  #BlogFlagVector,
-  #BlogFlagVectorShadow {
+  @media (width >= 1024px) {
+    #Blog {
+      width: 256px;
+    }
+  }
+
+  #BlogVector,
+  #BlogVectorShadow {
     fill: none;
-    stroke-width: 11;
+    stroke-width: 14;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  #BlogFlagVectorShadow {
+  #BlogVectorShadow {
     stroke: var(--color-gray-50-50);
   }
 
   .lightning {
     d: path('');
-    animation: lightningMotion 2s ease-out forwards;
+    animation: lightningMotion 1500ms ease-out forwards;
   }
 
   @keyframes lightningMotion {

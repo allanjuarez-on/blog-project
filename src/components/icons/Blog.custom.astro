@@ -6,19 +6,20 @@ interface Props {
 
 const { class: className, size, ...props } = Astro.props
 ---
+
 <svg
-  id='BlogFlag'
+  id='Blog'
   data-banner-value='blog'
   viewBox='0 0 346 256'
   class:list={['hidden', className]}
   xmlns='http://www.w3.org/2000/svg'
   {...props}>
   <path
-    id='BlogFlagVectorShadow'
+    id='BlogVectorShadow'
     d='M8 247.5C71.8125 185.468 129.943 113.612 185.5 8C182.569 26.2394 186.019 214.93 209.5 199C232.981 183.07 248.5 152 266 141.5C283.5 131 275.5 188.5 275.5 188.5C275.5 188.5 300 125.5 337.5 106'
   ></path>
   <path
-    id='BlogFlagVector'
+    id='BlogVector'
     d='M8 247.5C71.8125 185.468 129.943 113.612 185.5 8C182.569 26.2394 186.019 214.93 209.5 199C232.981 183.07 248.5 152 266 141.5C283.5 131 275.5 188.5 275.5 188.5C275.5 188.5 300 125.5 337.5 106'
   ></path>
 </svg>

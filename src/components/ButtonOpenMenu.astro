@@ -4,18 +4,20 @@ import Icon from './Icon.astro'
 const { class: className, ...props } = Astro.props
 ---
 
-<button id='ButtonOpenMenu' class:list={['cursor-pointer', className]} {...props}>
+<button id='ButtonOpenMenu' class:list={['lg:cursor-pointer', className]} {...props}>
   <Icon iconName='open' />
 </button>
 
 <script>
   function openMenu() {
     const buttonOpenComponent = document.querySelector('#ButtonOpenMenu')
-    const menu = document.querySelector('#PrimaryMenu')
+    const menu = document.querySelector('#Menu')
     const body = document.querySelector('body')
 
     if (menu && body) {
       buttonOpenComponent?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('openMenu', { detail: { isOpen: true } }))
+
         body?.classList.add('overflow-hidden')
         menu?.classList.replace('hidden', 'fixed')
         menu?.classList.replace('h-0', 'h-dvh')

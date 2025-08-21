@@ -1,10 +1,6 @@
-import type { MainMenuLink, PrimitiveLink } from '@custom-types/global'
+import type { MenuLink, PrimitiveLink } from '@custom-types/global'
 
-// Por el momento esta idea se mantendra oculta.
-// import { getBannerByName } from '@utils/get-dir-components.util'
-// const modules: AstroModule = import.meta.glob('../components/icons/*.custom.astro', { eager: true })
-
-export const mainMenuLinks: MainMenuLink[] = [
+export const menuLinks: MenuLink[] = [
   {
     id: 'blog',
     href: '/blog',

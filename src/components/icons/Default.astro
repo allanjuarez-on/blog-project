@@ -1,20 +1,21 @@
 ---
 interface Props {
-  class: string | null | undefined
+  size?: string | null
+  class?: string | null
 }
 
-const { class: className, ...props } = Astro.props
+const { size = '24', class: className, ...props } = Astro.props
 ---
 
 <svg
-  width='24'
-  height='24'
-  viewBox='0 0 24 24'
+  width={size}
+  height={size}
+  viewBox=`0 ${size} ${size}`
   fill='none'
   xmlns='http://www.w3.org/2000/svg'
   class:list={[className]}
   {...props}>
-  <g id='Default'>
+  <g>
     <mask
       id='mask0_308_2'
       style='mask-type:alpha'

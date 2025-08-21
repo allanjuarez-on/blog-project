@@ -1,20 +1,22 @@
 ---
 import ObserverLink from './ObserverLink.astro'
-import BlogFlag from './BlogFlag.astro'
-import PortfolioFlag from './PortfolioFlag.astro'
-import type { MainMenuLink } from '@custom-types/global'
+import BlogIcon from './BlogIcon.astro'
+import PortfolioIcon from './PortfolioIcon.astro'
+import type { MenuLink } from '@custom-types/global'
 
 interface Props {
-  links: MainMenuLink[]
+  links: MenuLink[]
 }
 
 const { links } = Astro.props
 ---
 
-<div class='relative p-10 h-full overflow-hidden flex flex-col gap-8 justify-end lg:border lg:border-gray-600'>
+<div
+  id='MenuList'
+  class='relative p-10 h-full overflow-hidden flex flex-col gap-8 justify-end lg:border lg:border-gray-600'>
   <div class='h-full flex flex-row justify-center items-center'>
-    <BlogFlag />
-    <PortfolioFlag />
+    <BlogIcon />
+    <PortfolioIcon />
   </div>
   <ul class='flex flex-col gap-7 text-center'>
     {links.length === 0 && <span>No hay links disponibles.</span>}
@@ -24,10 +26,9 @@ const { links } = Astro.props
           <li>
             <ObserverLink
               ref={link.href}
-              type="local"
-              class='text-[1.75rem] font-medium'
-              data-menu-link-value={link.label.toLowerCase()}
-            >
+              type='local'
+              class='text-[1.75rem]'
+              data-menu-link-value={link.label.toLowerCase()}>
               {link.label}
             </ObserverLink>
           </li>
