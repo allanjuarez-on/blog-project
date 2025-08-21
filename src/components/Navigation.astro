@@ -1,10 +1,10 @@
 ---
 import ButtonOpenMenu from './ButtonOpenMenu.astro'
 import Menu from './Menu.astro'
-import type { MainMenuLink } from '@custom-types/global'
+import type { MenuLink } from '@custom-types/global'
 
 interface Props {
-  links: MainMenuLink[]
+  links: MenuLink[]
   class?: string | null | undefined
 }
 
@@ -12,7 +12,7 @@ const { links, class: className } = Astro.props
 ---
 
 <nav
-  id='PrimaryNavigation'
+  id='Navigation'
   class:list={[
     'fixed top-0 right-0 left-0 z-[9] mx-auto max-w-[1440px] transition-transform duration-200 ease-in-out lg:top-8 lg:px-16 xl:px-32',
     className,
@@ -24,17 +24,16 @@ const { links, class: className } = Astro.props
 <Menu links={links} />
 
 <script>
-  import type { AstroNode } from "@custom-types/global"
+  import type { AstroNode } from '@custom-types/global'
 
   function updateNavClassByScroll() {
-    const navComponent: AstroNode = document.querySelector('#PrimaryNavigation')
-    
-    if(!navComponent) return
+    const navComponent: AstroNode = document.querySelector('#Navigation')
+
+    if (!navComponent) return
 
     const navComponentHeight = navComponent.getBoundingClientRect()
     const height = navComponentHeight.height || 90
     let lastScroll = 0
-
 
     window.addEventListener('scroll', () => {
       const currentScroll = window.scrollY

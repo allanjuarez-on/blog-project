@@ -1,7 +1,7 @@
 ---
 import Navigation from '@components/Navigation.astro'
 import Footer from '@components/Footer.astro'
-import { mainMenuLinks } from '@routes/paths'
+import { menuLinks } from '@routes/paths'
 import '../styles/index.css'
 
 interface Props {
@@ -20,8 +20,8 @@ const { pageTitle } = Astro.props
     <title>{pageTitle}</title>
   </head>
   <body>
-    <Navigation links={mainMenuLinks} />
-    <main class="mt-[90px] lg:mt-[calc(5.625rem+2rem)]">
+    <Navigation links={menuLinks} />
+    <main class='mt-[90px] lg:mt-[calc(5.625rem+2rem)]'>
       <slot />
     </main>
     <Footer />

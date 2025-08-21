@@ -1,0 +1,128 @@
+---
+import Icon from './Icon.astro'
+
+const icons = ['star', 'circle', 'triangle', 'square']
+---
+
+<div class='hidden w-full h-full' data-icon-value='portfolio'>
+  <div id='Box' class='relative h-full flex justify-center items-center'>
+    {
+      icons.map(icon => {
+        return (
+          <Icon
+            iconName={icon}
+            class='absolute opacity-0'
+            data-component={icon}
+            exp={new RegExp('\\.custom.astro$', 'i')}
+          />
+        )
+      })
+    }
+  </div>
+</div>
+
+<script>
+  import type { AstroNode, AstroNodeList, OpenMenuEvent } from '@custom-types/global'
+
+  const wrapper: AstroNode = document.querySelector('#Box')
+  const components: AstroNodeList = wrapper?.querySelectorAll('[data-component]')
+
+  let idAnimationFrame: number
+
+  // animateElement()
+  // Genera una animación dada en un cierto periodo de tiempo establecido.
+  function animateElement(initTime: DOMHighResTimeStamp, ...args: any[]): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const [element, duration, property, to, from] = args
+      const transitionValue = to - from
+
+      let progress = 0
+
+      // timestamp es el tiempo desde que se inició la página en microsegundos pero solo cuando se llama la funcion desde requestAnimationFrame.
+      // Ademas este esta sincronizado con el repintado del navegador.
+      function opacity(timestamp: DOMHighResTimeStamp) {
+        // Tiempo transcurrido desde el inicio de la animación.
+        const elapsed = timestamp - initTime
+
+        // Math.min() Asegura que el progreso no supere a 1.
+        // tiempo transcurrido / duracion (cuantas veces cabe el tiempo transcurrido en la duracion).
+        progress = Math.min(elapsed / duration, 1)
+
+        // -1 o 1 * progreso === dirección de la animacion (0 -> 1 o 1 -> 0)
+        const value = String(from + transitionValue * progress)
+
+        if (property === 'opacity') {
+          element.style[property] = value
+        } else {
+          element.style[property] = `${value}px`
+        }
+
+        if (progress < 1) {
+          idAnimationFrame = requestAnimationFrame(opacity)
+        } else {
+          resolve(true)
+        }
+      }
+
+      // requestAnimationFrame() siempre devuelve un id unico
+      idAnimationFrame = requestAnimationFrame(opacity)
+
+      window.addEventListener('closeMenu', e => {
+        const { detail } = e as CustomEvent<OpenMenuEvent>
+        if (!detail.isOpen) {
+          element.style[property] = 0
+          // El id del frame puede ser cancelado con cancelAnimationFrame()
+          cancelAnimationFrame(idAnimationFrame)
+          reject(false)
+        }
+      })
+    })
+  }
+
+  // initAnimation()
+  // Funcion de tipo clousure; inicializa el tiempo y ejecuta el callback que anima al componente.
+  function initAnimation(cb: (initTime: DOMHighResTimeStamp, ...args: any[]) => Promise<any>) {
+    return async function (...args: any[]) {
+      const initTime: DOMHighResTimeStamp = performance.now()
+      return cb(initTime, ...args)
+    }
+  }
+
+  async function animationLoop() {
+    if (!components || components.length === 0) {
+      console.warn('No hay componentes para animar.')
+      return
+    }
+
+    try {
+      for (let i = 0; i < components.length; i++) {
+        await initAnimation(animateElement)(components[i], 3000, 'opacity', 1, 0)
+        await initAnimation(animateElement)(components[i], 800, 'opacity', 0, 1)
+      }
+    } catch (error) {
+      // console.error(error)
+    }
+  }
+
+  let running = false
+
+  window.addEventListener('openMenu', async e => {
+    const { detail } = e as CustomEvent<OpenMenuEvent>
+    if (detail.isOpen) running = true
+    const location = new URL(window.location.href).pathname.split('/')[1]
+
+    while (running && location === 'portfolio') {
+      await animationLoop()
+    }
+  })
+
+  window.addEventListener('closeMenu', e => {
+    const { detail } = e as CustomEvent<OpenMenuEvent>
+    if (!detail.isOpen) running = false
+  })
+
+  document.addEventListener('visibilitychange', () => {
+    console.log('La animación se detuvo')
+    if (document.hidden) return
+  })
+</script>

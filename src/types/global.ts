@@ -28,13 +28,16 @@ export interface PrimitiveLink {
   class: string | null | undefined
 }
 
-export interface MainMenuLink {
+export interface MenuLink {
   id: string
   href: string
   label: string
-  banner?: ((_props: Record<string, any>) => any) | null
 }
 
 export interface UrlChangeEventData {
   payload: string | null
+}
+
+export interface OpenMenuEvent {
+  isOpen: boolean
 }

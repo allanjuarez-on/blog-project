@@ -1,17 +1,18 @@
 ---
 import MenuBar from './MenuBar.astro'
 import MenuList from './MenuList.astro'
-import type { MainMenuLink } from '@custom-types/global'
+import type { MenuLink } from '@custom-types/global'
 
 interface Props {
-  links: MainMenuLink[]
+  links: MenuLink[]
   class?: string | null | undefined
 }
 
 const { links, class: className } = Astro.props
 ---
+
 <div
-  id='PrimaryMenu'
+  id='Menu'
   class:list={[
     'hidden left-0 top-0 right-0 z-[10] h-0 bg-gray-1000/50 backdrop-blur-3xl -translate-y-full',
     className,
@@ -24,36 +25,38 @@ const { links, class: className } = Astro.props
 
 <script>
   import { syncLinkWithUrlPathName } from '@lib/dom/blog'
-  import type { AstroNodeList } from '@custom-types/global'
+  import type { AstroNode, AstroNodeList } from '@custom-types/global'
 
-  const menu = document.querySelector('#PrimaryMenu')
-  const menuList: AstroNodeList = menu?.querySelectorAll('a[data-menu-link-value]')
-  const bannerList: AstroNodeList = menu?.querySelectorAll('[data-banner-value]')
+  const menu: AstroNode = document.querySelector('#Menu')
 
-  syncLinkWithUrlPathName({ links: menuList, dataAttr: 'menuLinkValue' })
+  const menuOptions: AstroNodeList = menu?.querySelectorAll('a[data-menu-link-value]')
+  const iconList: AstroNodeList = menu?.querySelectorAll('[data-icon-value]')
+
+  syncLinkWithUrlPathName({ links: menuOptions, dataAttr: 'menuLinkValue' })
 
   const currentPathName = new URL(window.location.href).pathname.split('/')
 
-  bannerList?.forEach(banner => {
-    const dataBanner = banner.dataset.bannerValue ?? ''
-    const isActive = currentPathName.includes(dataBanner)
+  iconList?.forEach(icon => {
+    const dataIcon = icon.dataset.iconValue ?? ''
+    const isActive = currentPathName.includes(dataIcon)
 
     if (!isActive) {
-      banner.classList.remove('block')
-      banner.classList.add('hidden')
+      icon.classList.remove('block')
+      icon.classList.add('hidden')
       return
     }
 
-    if (dataBanner === 'blog') {
-      banner.classList.remove('hidden')
-      const path = banner.querySelector('#BlogFlagVector')
-      path.classList.add('block', 'lightning')
+    if (dataIcon === 'blog') {
+      const path = icon.querySelector('#BlogVector')
+      if (!path) return
+
+      icon.classList.replace('hidden', 'block')
+      path.classList.add('lightning')
       return
     }
 
-    if (dataBanner === 'portfolio') {
-      banner.classList.remove('hidden')
-      banner.classList.add('block')
+    if (dataIcon === 'portfolio') {
+      icon.classList.replace('hidden', 'block')
       return
     }
   })
