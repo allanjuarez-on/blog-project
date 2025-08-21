@@ -1,6 +1,5 @@
 ---
-import CardArticle from '@components/blog/ArticleCard.astro'
-import Link from '@components/Link.astro'
+import ArticleCard from '@components/blog/ArticleCard.astro'
 import Icon from '@components/Icon.astro'
 
 interface Props {
@@ -17,27 +16,30 @@ const { content } = Astro.props
 ---
 
 <div id='ArticleSlider' class='w-full'>
-  <div class='relative mb-7'>
+  <div class='relative mb-7 min-h-64'>
     <div
       class='hidden absolute top-0 left-0 z-2 w-[15%] h-full pointer-events-none bg-linear-to-l from-transparent to-gray-1000'
       data-shadow='left'>
     </div>
     <div
       id='SliderTrack'
-      class='snap-x snap-mandatory w-full flex gap-4 overflow-x-auto no-scrollbar'>
+      class='p-[1px] overflow-x-auto snap-x snap-mandatory no-scrollbar flex gap-4'>
       {
-        content.map(
-          article => (
-            (
-              // snap-mandatory sirve para que los artículos se alineen correctamente al hacer scroll
-              // snap-x permite el scroll horizontal
-              // snap-center permite que cada artículo se centre en el viewport al hacer scroll
-              <Link type='local' href={`${article.id}`} class='snap-center min-w-[16rem] w-full max-w-[24rem] lg:min-w-[24rem]'>
-                <CardArticle {...article.data} />
-              </Link>
-            )
-          ),
-        )
+        content.map(article => {
+          return (
+            // snap-mandatory sirve para que los artículos se alineen correctamente al hacer scroll
+            // snap-x permite el scroll horizontal
+            // snap-center permite que cada artículo se centre en el viewport al hacer scroll
+            <ArticleCard
+              class='min-w-[16rem] w-full snap-center lg:min-w-[24rem]'
+              href={`${article.id}`}
+              title={article.data.title}
+              date={article.data.pubDate}
+              tag={article.data.category.id}
+              thumbnail={article.data.thumbnail}
+            />
+          )
+        })
       }
     </div>
     <div
@@ -46,10 +48,10 @@ const { content } = Astro.props
     </div>
   </div>
   <div class='relative flex justify-between px-4'>
-    <button disabled="true" id='Back' class='opacity-50 cursor-not-allowed'>
+    <button disabled='true' id='Back' class='opacity-50 cursor-not-allowed'>
       <Icon iconName='BackArrow' />
     </button>
-    <button id='Forward' class="lg:cursor-pointer">
+    <button id='Forward' class='lg:cursor-pointer'>
       <Icon iconName='ForwardArrow' />
     </button>
   </div>
@@ -79,14 +81,18 @@ const { content } = Astro.props
       shadowRight.classList.add('hidden')
     }
 
-     if (!(sliderItems > 1 && isExistElements)) return
+    if (!(sliderItems > 1 && isExistElements)) return
+
+    let item = trackSlider.firstElementChild
 
     backBtn.addEventListener('click', () => {
-      trackSlider.scrollBy({ left: -1, behavior: 'smooth' })
+      const size = item?.getBoundingClientRect().width
+      trackSlider.scrollBy({ left: Number(`-${size}`), behavior: 'smooth' })
     })
 
     forwardBtn.addEventListener('click', () => {
-      trackSlider.scrollBy({ left: 1, behavior: 'smooth' })
+      const size = item?.getBoundingClientRect().width
+      trackSlider.scrollBy({ left: size, behavior: 'smooth' })
     })
 
     let scrollLeft = 0
