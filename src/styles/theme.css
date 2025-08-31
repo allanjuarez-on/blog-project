@@ -130,9 +130,9 @@
 
 @layer base {
   html {
+    background-color: var(--color-gray-1000);
     font-family: var(--font-sans);
     color: var(--color-gray-300);
-    /* scrollbar-gutter: stable; */
   }
 
   body {
