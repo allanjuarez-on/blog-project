@@ -36,9 +36,9 @@ const {
 const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateStyle: 'full' } })
 ---
 
-<article id='LayoutArticle' class='relative overflow-hidden'>
-  <div class='h-80 mb-8 flex justify-center'>
-    <Image src={cover.src} alt={cover.alt} class='w-full h-full lg:px-16 xl:px-32 object-cover' />
+<article id='ArticleLayout' class='relative overflow-hidden'>
+  <div class='w-full max-w-[75ch] mx-auto mb-8'>
+    <Image src={cover.src} alt={cover.alt} class='max-h-[28rem] object-cover' />
   </div>
   <div class='max-w-[75ch] mx-auto px-4 pb-16'>
     <section class='mb-16 flex flex-col gap-4'>
@@ -85,7 +85,7 @@ const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateS
   import hljs from 'highlight.js'
   import 'highlight.js/styles/sunburst.css'
 
-  const layoutArticle = document.querySelector('#LayoutArticle')
+  const layoutArticle = document.querySelector('#ArticleLayout')
   const headings = layoutArticle?.querySelectorAll('.heading:not(h1)')
 
   // A cada elemento Heading se asigna un enlace ancla basandose al atributo href de su link interno generado por los plugins rehypeSlug y rehypeAutolinkHeadings.
