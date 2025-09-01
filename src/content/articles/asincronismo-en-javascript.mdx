@@ -1,0 +1,68 @@
+---
+title: ¿Qué es y como funciona el asincronismo en JavaScript?
+authors:
+  - allanjuarez
+pubDate: August/25/2025
+category: javascript
+cover:
+  img: src/assets/await.png
+  description: Default
+thumbnail:
+  img: src/assets/await.png
+  description: Default
+relatedArticles:
+  - crear-un-proyecto-con-expojs-y-react-native-2025
+---
+
+import CodeBlock from '@components/blog/CodeBlock.astro'
+import Heading2 from '@components/blog/Heading2.astro'
+import Heading3 from '@components/blog/Heading3.astro'
+import Paragraph from '@components/blog/Paragraph.astro'
+import List from '@components/blog/List.astro'
+export const components = { h2: Heading2, h3: Heading3, p: Paragraph, ul: List }
+
+En nuestra vida diaria tenemos que realizar múltiples tareas ya sea en el trabajo; escuela o en el hogar; nos gustaría que existiera alguna manera de completar múltiples tareas en un mismo lapso de tiempo, pero lamentablemente en la mayoría de los casos esto no es posible.
+
+Lo mismo pasa cuando desarrollamos aplicaciones con Javascript ya sea vainilla o en con algún framework/librería; casi siempre existirán tareas que deban ejecutarse en segundo plano para que la aplicación que desarrollamos no “espere” a que termine un proceso demasiado tardado. Si se ejecutara un programa con el comportamiento natural de javascript (línea por línea) a una gran cantidad de aplicaciones les afectaría en su rendimiento y como repercusión los usuarios lo terminarían pagando al esperar una cantidad de tiempo ridícula para poder utilizar ciertas partes de una aplicación.
+
+Por eso mismo existe el asincronismo, este permite que Javascript pueda ejecutar más procesos o eventos sin frenar la ejecución del programa ante uno o varios bloques de código que ejecutan tareas muy pesadas.
+
+Imaginemos que tenemos una aplicación en donde en una parte de ella deba aplicar una animación a un conjunto de elementos y que esto se deba cumplir en un tiempo establecido.
+
+export const example1 = `function setAnimationWithCallback(element, delay, callback) {
+    setTimeout(() => {
+        element.classList.replace("bg-gray-400", "bg-red-700");
+        callback();
+    }, delay || 1000);
+}`.trim()
+
+<CodeBlock lang='js' code={example1} />
+
+export const example2 =
+`
+// Creamos los contenedores que seran animados.
+for (let i = 0; i < 3; i++) {
+    const container = document.createElement("div");
+    container.textContent = \`Container \${i + 1}\`;
+    container.classList.add(...["px-8", "py-8", "bg-gray-400"]);
+    exampleCallback.appendChild(container);
+}
+
+const containers = exampleCallback.querySelectorAll("div");
+
+// Aqui comienza el famoso "Callback Hell".
+setAnimationWithCallback(containers[0], 1000, () =>
+setAnimationWithCallback(containers[1], 2000, () =>
+setAnimationWithCallback(containers[2], 3000, () => {
+console.log("Se termino de animar los elements.")
+})
+)
+);`
+
+<CodeBlock lang='js' code={example2} />
+
+Cuando se trato hacer más de una tarea (animar más elementos) comenzó a verse enredoso y poco mantenible; ¿cierto?.
+
+Esto es un tema muy conocido en el un mundo de la programación, se llama Callback Hell y si esto los utilizas de manera recurrente tu código tiene grandes posibilidades de volverse una gran frustración.
+
+## Una opción más eficiente y moderna; las Promesas.

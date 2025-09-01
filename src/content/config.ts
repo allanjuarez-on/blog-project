@@ -50,9 +50,10 @@ const articleSchema = ({ image }: SchemaContext) => {
     category: reference('categories'),
     cover: imageSchema({ image }),
     thumbnail: imageSchema({ image }),
-    relatedPosts: z.array(reference('articles')).optional(),
+    relatedArticles: z.array(reference('articles')).optional(),
   })
 }
+
 const articles = defineCollection({
   // Cada vez que se define una coleccion con el tipo "content", astro en automatico genera un slug con el id del archivo.
   // type: 'content',

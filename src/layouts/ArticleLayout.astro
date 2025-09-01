@@ -16,7 +16,7 @@ interface Props {
     src: ImageMetadata
     alt: string
   }
-  relatedArticles: RelatedArticles[]
+  relatedArticles: RelatedArticles[] | []
 }
 
 interface RelatedArticles {
@@ -68,10 +68,16 @@ const date = formatPubDate(new Date(pubDate), { locales: 'es-MX', style: { dateS
     <section class='mb-32'>
       <slot />
     </section>
-    <ExternalSection>
-      <h4 slot='title' class='mb-4 font-semibold text-lg'>Artículos relacionados.</h4>
-      <ArticleSlider slot='content' content={relatedArticles} />
-    </ExternalSection>
+    {
+      relatedArticles.length >= 1 && relatedArticles.some((article) => article) && (
+        <ExternalSection>
+          <h4 slot='title' class='mb-4 font-semibold text-md text-gray-50'>
+            Artículos que te pueden interesar
+          </h4>
+          <ArticleSlider slot='content' content={relatedArticles} />
+        </ExternalSection>
+      )
+    }
   </div>
 </article>
 

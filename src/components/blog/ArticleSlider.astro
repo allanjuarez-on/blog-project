@@ -24,22 +24,26 @@ const { content } = Astro.props
     <div
       id='SliderTrack'
       class='p-[1px] overflow-x-auto snap-x snap-mandatory no-scrollbar flex gap-4'>
+      <!-- Fixed: Props & Render related articles section -->
       {
-        content.map(article => {
-          return (
-            // snap-mandatory sirve para que los artículos se alineen correctamente al hacer scroll
-            // snap-x permite el scroll horizontal
-            // snap-center permite que cada artículo se centre en el viewport al hacer scroll
-            <ArticleCard
-              class='min-w-[16rem] w-full snap-center lg:min-w-[24rem]'
-              href={`${article.id}`}
-              title={article.data.title}
-              date={article.data.pubDate}
-              tag={article.data.category.id}
-              thumbnail={article.data.thumbnail}
-            />
-          )
-        })
+        content.length >= 1 &&
+          content.some(article => article) &&
+          content.map(article => {
+            if (!article) return
+            return (
+              // snap-mandatory sirve para que los artículos se alineen correctamente al hacer scroll
+              // snap-x permite el scroll horizontal
+              // snap-center permite que cada artículo se centre en el viewport al hacer scroll
+              <ArticleCard
+                class='min-w-[16rem] w-full snap-center lg:min-w-[24rem]'
+                href={`${article.id}`}
+                title={article.data.title}
+                date={article.data.pubDate}
+                tag={article.data.category.id}
+                thumbnail={article.data.thumbnail}
+              />
+            )
+          })
       }
     </div>
     <div
