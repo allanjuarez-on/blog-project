@@ -1,26 +1,29 @@
 ---
-import CopyButton from "./CopyButton.astro"
+import CopyButton from './CopyButton.astro'
 
 const { fileName, lang, code, ...props } = Astro.props
 ---
 
 <div class='code-block' {...props}>
   <div class='code-block-header'>
-    <span>{`${fileName ?? ''}.${lang}`}</span>
+    <div class="code-block-extension">
+      <div>➜</div>
+      <span>{`${fileName ?? ''}.${lang}`}</span>
+    </div>
     <CopyButton code={code} lang={lang} aria-label='Copiar código' />
   </div>
-  <!-- class={`${lang ? `language-${lang}` : ''}`} -->
   <pre><code>{code}</code></pre>
 </div>
 
 <style>
-  .code-block, .code-block-header {
+  .code-block,
+  .code-block-header {
     border-style: solid;
     border-color: var(--color-gray-600);
   }
 
   .code-block {
-    margin-bottom: calc(1rem * 4);
+    margin-bottom: calc(1rem * 2);
     border-width: 1px;
     display: flex;
     flex-direction: column;
@@ -33,6 +36,22 @@ const { fileName, lang, code, ...props } = Astro.props
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  /* Refactor Article content */
+  .code-block-extension {
+    display: flex;
+    gap: 1ch;
+  }
+
+  .code-block-extension > div {
+    font-family: var(--font-mono);
+    color: var(--color-green-600);
+  }
+
+  .code-block-extension > span{
+    font-family: var(--font-mono);
+    color: var(--color-gray-50);
   }
 
   /* Para que pueda cambiar el elemento code con la dependencia highlight.js es accediendo a la clase hljs */
