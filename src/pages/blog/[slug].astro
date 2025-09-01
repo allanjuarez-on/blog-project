@@ -10,40 +10,47 @@ export async function getStaticPaths() {
   const rawArticles = await getCollection('articles')
 
   const cleanArticles = rawArticles.map(async raw => {
-    const rawArticle = await getEntry(raw)
-    const rawRelatedArticles = await getEntries(rawArticle.data.relatedPosts)
-    return {
-      articleData: {
+    try {
+      const rawArticle = await getEntry(raw)
+
+      return {
         ...rawArticle,
-      },
-      relatedArticles: [...rawRelatedArticles],
+        data: {
+          ...rawArticle.data,
+          relatedArticles: rawArticle.data.relatedArticles ? await getEntries(rawArticle.data.relatedArticles) : [],
+        },
+      }
+    } catch (error) {
+      console.error(error)
     }
   })
 
   const articles = await Promise.allSettled(cleanArticles).then(results =>
-    results.filter(data => data.status === 'fulfilled'),
+    results.filter(data => data.status === 'fulfilled').map(data => data.value),
   )
 
   return articles.map(article => {
+    if (!article) return
+
     return {
       params: {
-        slug: article.value.articleData.id,
+        slug: article.id,
       },
       props: {
-        article: article.value.articleData,
-        relatedArticles: article.value.relatedArticles,
+        article: article,
       },
     }
   })
 }
 
-const { article, relatedArticles } = Astro.props
+const { article } = Astro.props
 const { Content, remarkPluginFrontmatter } = await render(article)
 const {
   title,
   pubDate,
   authors,
   cover: { img, description },
+  relatedArticles,
 } = article.data
 ---
 
