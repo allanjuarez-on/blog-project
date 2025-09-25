@@ -16,7 +16,11 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
 </button>
 
 <script is:inline define:vars={{ codeData: code, buttonId }}>
-  const layoutArticle = document.querySelector('#LayoutArticle')
+  const ArticleLayout = document.querySelector('#ArticleLayout')
+  const copyButton = document.getElementById(buttonId)
+  const copyButtonBadge = copyButton.querySelector('span')
+  const originalTextBadge = copyButtonBadge.textContent ?? ''
+
   let isClickable = true
 
   // Crea un nuevo componenete de notificación con id, mensaje y estilos personalizables.
@@ -45,8 +49,9 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
       'transition-transform',
       'duration-200',
       'ease-in-out',
+      'translate-y-full',
       'font-mono',
-      'lg:bottom-2',
+      'lg:bottom-0',
       'lg:right-2',
       'lg:w-auto',
       'lg:rounded-full',
@@ -60,102 +65,90 @@ const buttonId = `copy-btn-${crypto.randomUUID().slice(0, 8)}`
     return container
   }
 
-  // Muestra en pantalla un componente de notificación de tipo "error".
+  // Renderiza en pantalla un componente de notificación de tipo "error".
   function showErrorNotification(errorMessage) {
-    let NotificationErrorComponent = layoutArticle.querySelector('#NotificationError')
+    let NotificationErrorComponent = ArticleLayout.querySelector('#NotificationError')
     // Nullish coalesing operator
     // Verifica si la variable es null o undefined si es asi, se le asignara el valor del lado derecho.
-    // ES equivalente a -> if (NotificationErrorComponent === null || NotificationErrorComponent === undefined)
+    // Es equivalente a -> if (NotificationErrorComponent === null || NotificationErrorComponent === undefined)
     NotificationErrorComponent ??= initNotificationComponent({
       message: errorMessage,
       id: 'NotificationError',
       customStyles: ['text-red-600'],
     })
 
-    layoutArticle.appendChild(NotificationErrorComponent)
+    NotificationErrorComponent.classList.remove('lg:bottom-0')
+    NotificationErrorComponent.classList.add('lg:bottom-2')
+    NotificationErrorComponent.classList.remove('translate-y-full')
 
     // La notifiación solo se mostrara por 3s, y despues de 300ms se eliminara del DOM.
     setTimeout(() => {
-      NotificationErrorComponent.classList.replace('lg:bottom-2', 'lg:bottom-0')
+      NotificationErrorComponent.classList.remove('lg:bottom-2')
+      NotificationErrorComponent.classList.add('lg:bottom-0')
       NotificationErrorComponent.classList.add('translate-y-full')
-
-      setTimeout(() => {
-        layoutArticle.removeChild(NotificationErrorComponent)
-      }, 300)
-    }, 3000)
+    }, 3300)
   }
 
-  // Muestra en pantalla un componente de notificación de tipo "success" y se sincroniza con el componente tag.
-  function showSuccessNotification(message, badge) {
-    let NotificationSuccessComponent = layoutArticle.querySelector('#NotificationSuccess')
+  // Renderiza en pantalla un componente de notificación de tipo "success" y se sincroniza con el componente tag.
+  function showSuccessNotification(message) {
+    let NotificationSuccessComponent = ArticleLayout.querySelector('#NotificationSuccess')
+
     NotificationSuccessComponent ??= initNotificationComponent({
       message: message,
       id: 'NotificationSuccess',
-      customStyles: ['text-green-600']
+      customStyles: ['text-green-600'],
     })
 
-    layoutArticle.appendChild(NotificationSuccessComponent)
+    ArticleLayout.appendChild(NotificationSuccessComponent)
 
-    const badgeText = badge.textContent
-    badge.textContent = 'Copiado'
-    badge.classList.remove('group-hover:lg:block')
-    badge.classList.replace('hidden', 'block')
-    badge.classList.replace('text-gray-50', 'text-green-600')
+    copyButtonBadge.textContent = 'Copiado'
+    copyButtonBadge.classList.remove('group-hover:lg:block')
+    copyButtonBadge.classList.replace('hidden', 'block')
+    copyButtonBadge.classList.replace('text-gray-50', 'text-green-600')
+
+    NotificationSuccessComponent.classList.remove('lg:bottom-0')
+    NotificationSuccessComponent.classList.add('lg:bottom-2')
+    NotificationSuccessComponent.classList.remove('translate-y-full')
 
     setTimeout(() => {
-      NotificationSuccessComponent.classList.replace('lg:bottom-2', 'lg:bottom-0')
+      copyButtonBadge.textContent = originalTextBadge
+      copyButtonBadge.classList.remove('text-green-600')
+      copyButtonBadge.classList.replace('block', 'hidden')
+      copyButtonBadge.classList.add('text-gray-50', 'group-hover:lg:block')
+      NotificationSuccessComponent.classList.remove('lg:bottom-2')
+      NotificationSuccessComponent.classList.add('lg:bottom-0')
       NotificationSuccessComponent.classList.add('translate-y-full')
-      badge.classList.replace('block', 'hidden')
-      badge.classList.replace('text-green-600', 'text-gray-50')
-      badge.classList.add('group-hover:lg:block')
-      badge.textContent = badgeText
-
-      setTimeout(() => {
-        layoutArticle.removeChild(NotificationSuccessComponent)
-      }, 300)
-    }, 3000)
+    }, 3300)
   }
 
   // La function Throttle regula la cantidad de clicks del boton copiar.
   function throttle(callback, delay) {
     return function (...args) {
-      const badge = args[1]
-      const badgeText = badge.textContent
-
-      if (!isClickable) {
-        // Verifica si el segundo argumento existe y es un HTMLElement
-        if (badge && badge instanceof HTMLElement) {
-          badge.textContent = 'Espera un momento; por favor'
-          badge.classList.replace('text-green-600', 'text-red-600')
-        }
-        return
-      }
-
       isClickable = false
+
       callback(...args)
 
       setTimeout(() => {
         isClickable = true
-        badge.textContent = badgeText
-        badge.classList.replace('text-red-600', 'text-gray-50')
       }, delay)
     }
   }
 
   function copyToClipboard() {
-    const copyButton = document.getElementById(buttonId)
-    const copyButtonBadge = copyButton.querySelector('span')
     if (!copyButton || !copyButtonBadge) return
 
     copyButton.addEventListener('click', async function () {
-      try {
-        // throw Error('No pude copiar el codigo; intentalo más tarde')
-        await navigator.clipboard.writeText(codeData)
-        const successNotification = throttle(showSuccessNotification, 3300)
-        successNotification('Copiado al portapapeles', copyButtonBadge)
-      } catch (err) {
-        const errorNotificación = throttle(showErrorNotification, 3300)
-        errorNotificación(err.message, copyButtonBadge)
+      if (isClickable) {
+        try {
+          if (!(navigator.clipboard && navigator.clipboard.writeText)) {
+            throw Error('El navegador no es compatible con clipboard.')
+          }
+
+          await navigator.clipboard.writeText(codeData)
+          throttle(showSuccessNotification, 3300)('Copiado al portapapeles')
+        } catch (err) {
+          throttle(showErrorNotification, 3300)(err.message)
+        }
       }
     })
   }

@@ -1,20 +1,18 @@
 // @ts-check
 import { defineConfig } from 'astro/config'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import react from '@astrojs/react'
 import mdx from '@astrojs/mdx'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeSlug from 'rehype-slug'
-import tailwindcss from '@tailwindcss/vite'
 import { remarkReadingTime } from './src/utils/remark-reading-time.ts'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [basicSsl(), tailwindcss()],
   },
   integrations: [react(), mdx()],
-  devToolbar: {
-    enabled: false,
-  },
   // redirects: Record.<string, RedirectConfig> || { string: string } || string: { status: number, destination: string}
   // Regirige a una dirección diferente
   // Nota: todas ls solicitudes GET seran redirigidas con un status 301 (moved permanently)
@@ -28,6 +26,7 @@ export default defineConfig({
   // Nota: de igual manera se puede pasar solo un objeto con el puerto y otra configuración
   server: ({ command }) => {
     return {
+      host: true,
       // port: number
       port: command === 'dev' ? 4000 : 4080,
       // open: string | boolean
@@ -45,4 +44,8 @@ export default defineConfig({
       rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]],
     }),
   ],
+  // Elimina la barra de herramientas que viene por defecto en astrojs.
+  devToolbar: {
+    enabled: false,
+  },
 })
