@@ -1,0 +1,141 @@
+---
+slug: como-funcionan-las-custom-properties-de-css
+title: ¿Como funcionana las custom properties de CSS?
+authors:
+  - allanjuarez
+pubDate: Sep/08/2025
+category: css
+cover:
+  img: src/assets/properties.jpg
+  description: Default
+thumbnail:
+  img: src/assets/properties.jpg
+  description: Default
+---
+
+import CodeBlock from '@components/blog/CodeBlock.astro'
+import Heading2 from '@components/blog/Heading2.astro'
+import Heading3 from '@components/blog/Heading3.astro'
+import Paragraph from '@components/blog/Paragraph.astro'
+import List from '@components/blog/List.astro'
+export const components = { h2: Heading2, h3: Heading3, p: Paragraph, ul: List }
+
+Seguro has escuchado hablar de las *CSS Custom Properties*, más conocidas como **variables CSS**.  
+Son una de esas características que al principio parecen un “extra”, pero que en proyectos grandes terminan siendo indispensables.  
+
+En este artículo te voy a contar qué son, cómo funcionan, ejemplos prácticos y por qué deberías integrarlas en tus proyectos desde ya.
+
+---
+
+## ¿Qué son las Custom Properties?
+
+En pocas palabras, las Custom Properties son **variables que defines en CSS** para reutilizar valores en múltiples lugares.  
+Se escriben con dos guiones `--` al inicio del nombre y se acceden con la función `var()`.
+
+Ejemplo básico:
+
+export const example1 = 
+`:root {
+  --color-primary: #1e40af;
+  --spacing-md: 1.5rem;
+}
+
+button {
+  background-color: var(--color-primary);
+  padding: var(--spacing-md);
+}`.trim()
+
+<CodeBlock lang='css' code={example1} />
+
+Aquí definimos un color y un espaciado como variables globales dentro de :root.
+Luego las usamos en el botón con var(--nombre).
+
+Ventajas de usarlas:
+- Reutilización: un solo cambio actualiza todo tu diseño.
+- Consistencia: todos los componentes usan los mismos valores base.
+- Tematización: facilitan crear temas (por ejemplo: oscuro/claro).
+
+
+## Ejemplo 1: Tema claro y oscuro
+
+Las variables hacen que cambiar entre light mode y dark mode sea muy fácil:
+
+export const example2 = 
+`:root {
+  --background: #ffffff;
+  --text: #111111;
+}
+
+[data-theme="dark"] {
+  --background: #111111;
+  --text: #ffffff;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+}`.trim()
+
+<CodeBlock lang='css' code={example2} />
+
+Con este enfoque, cambiar el atributo data-theme="dark" en el html o body actualiza todos los estilos automáticamente.
+
+
+## Ejemplo 2: Responsividad con variables
+
+También puedes ajustar variables en media queries para manejar breakpoints:
+
+export const example3 = 
+`:root {
+  --container-width: 90%;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --container-width: 70%;
+  }
+}
+
+.container {
+  width: var(--container-width);
+}`.trim()
+
+<CodeBlock lang='css' code={example3} />
+
+De esta forma, el ancho del contenedor cambia automáticamente según el tamaño de pantalla, manteniendo el código mucho más limpio.
+
+## Ejemplo 3: Variables dinámicas con JavaScript
+
+Una de las mayores ventajas es que puedes modificar variables desde JS:
+
+export const example4 = 
+`<div class="box"></div>
+
+<style>
+  :root {
+    --box-size: 100px;
+    --box-color: tomato;
+  }
+
+  .box {
+    width: var(--box-size);
+    height: var(--box-size);
+    background-color: var(--box-color);
+  }
+</style>
+
+<script>
+  document.documentElement.style.setProperty("--box-size", "200px");
+  document.documentElement.style.setProperty("--box-color", "royalblue");
+</script>`.trim()
+
+<CodeBlock lang='css' code={example4} />
+
+En este ejemplo, la caja cambia de tamaño y color dinámicamente al actualizar las variables con JavaScript.
+
+## Buenas prácticas
+
+- Define variables globales en :root para colores, tipografías y espaciados principales.
+- Usa variables locales (definidas dentro de un selector) para componentes específicos.
+- Mantén una nomenclatura clara (--color-primary, --font-heading, etc.).
+- Evita abusar de las variables para todo: úsalas donde aporten flexibilidad.

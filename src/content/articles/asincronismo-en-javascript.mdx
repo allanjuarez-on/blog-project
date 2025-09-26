@@ -1,5 +1,5 @@
 ---
-title: ¿Qué es y como funciona el asincronismo en JavaScript?
+title: ¿Qué es el asincronismo en JavaScript?
 authors:
   - allanjuarez
 pubDate: August/25/2025
@@ -11,7 +11,8 @@ thumbnail:
   img: src/assets/await.png
   description: Default
 relatedArticles:
-  - crear-un-proyecto-con-expojs-y-react-native-2025
+  - que-son-y-para-que-sirven-los-middelwares-de-nextjs
+  - como-funcionan-las-custom-properties-de-css
 ---
 
 import CodeBlock from '@components/blog/CodeBlock.astro'
@@ -21,48 +22,143 @@ import Paragraph from '@components/blog/Paragraph.astro'
 import List from '@components/blog/List.astro'
 export const components = { h2: Heading2, h3: Heading3, p: Paragraph, ul: List }
 
-En nuestra vida diaria tenemos que realizar múltiples tareas ya sea en el trabajo; escuela o en el hogar; nos gustaría que existiera alguna manera de completar múltiples tareas en un mismo lapso de tiempo, pero lamentablemente en la mayoría de los casos esto no es posible.
+Cuando empezamos a programar en JavaScript, uno de los conceptos que más confunde es el asincronismo. ¿Qué significa que algo sea “asíncrono”? ¿Por qué a veces el código no se ejecuta en el orden que esperábamos? Y, sobre todo, ¿cómo podemos controlarlo sin volvernos locos?
 
-Lo mismo pasa cuando desarrollamos aplicaciones con Javascript ya sea vainilla o en con algún framework/librería; casi siempre existirán tareas que deban ejecutarse en segundo plano para que la aplicación que desarrollamos no “espere” a que termine un proceso demasiado tardado. Si se ejecutara un programa con el comportamiento natural de javascript (línea por línea) a una gran cantidad de aplicaciones les afectaría en su rendimiento y como repercusión los usuarios lo terminarían pagando al esperar una cantidad de tiempo ridícula para poder utilizar ciertas partes de una aplicación.
+En este artículo vamos a repasar, paso a paso, cómo funciona el asincronismo en JavaScript, con ejemplos claros que puedes probar tú mismo.
 
-Por eso mismo existe el asincronismo, este permite que Javascript pueda ejecutar más procesos o eventos sin frenar la ejecución del programa ante uno o varios bloques de código que ejecutan tareas muy pesadas.
+## JavaScript y su naturaleza “single-thread”
 
-Imaginemos que tenemos una aplicación en donde en una parte de ella deba aplicar una animación a un conjunto de elementos y que esto se deba cumplir en un tiempo establecido.
+Primero lo básico: JavaScript es un lenguaje single-threaded, es decir, solo puede ejecutar una cosa a la vez. Entonces, ¿cómo puede hacer varias tareas “al mismo tiempo”?
 
-export const example1 = `function setAnimationWithCallback(element, delay, callback) {
-    setTimeout(() => {
-        element.classList.replace("bg-gray-400", "bg-red-700");
-        callback();
-    }, delay || 1000);
+La respuesta está en que delega ciertas operaciones —como esperar la respuesta de un servidor o contar un temporizador— al navegador o al entorno de ejecución (Node.js, por ejemplo). De esta manera, JavaScript no se queda “congelado” y puede seguir ejecutando el resto del código.
+
+export const example1 = `// Ejemplo síncrono
+console.log("Inicio");
+for (let i = 0; i < 3; i++) {
+  console.log("Contando:", i);
+}
+console.log("Fin");
 }`.trim()
+
+export const result1 = `Inicio
+Contando: 0
+Contando: 1
+Contando: 2
+Fin`.trim()
 
 <CodeBlock lang='js' code={example1} />
 
+El resultado sera:
+
+<CodeBlock lang='js' code={result1} />
+
+Ahora comparemos con algo asíncrono:
+
 export const example2 =
 `
-// Creamos los contenedores que seran animados.
-for (let i = 0; i < 3; i++) {
-    const container = document.createElement("div");
-    container.textContent = \`Container \${i + 1}\`;
-    container.classList.add(...["px-8", "py-8", "bg-gray-400"]);
-    exampleCallback.appendChild(container);
-}
+// Ejemplo asíncrono
+console.log("Inicio");
+setTimeout(() => {
+  console.log("Esto tarda 2 segundos");
+}, 2000);
+console.log("Fin");
+`.trim()
 
-const containers = exampleCallback.querySelectorAll("div");
-
-// Aqui comienza el famoso "Callback Hell".
-setAnimationWithCallback(containers[0], 1000, () =>
-setAnimationWithCallback(containers[1], 2000, () =>
-setAnimationWithCallback(containers[2], 3000, () => {
-console.log("Se termino de animar los elements.")
-})
-)
-);`
+export const result2 = 
+`
+Inicio
+Fin
+Esto tarda 2 segundos
+`.trim()
 
 <CodeBlock lang='js' code={example2} />
 
-Cuando se trato hacer más de una tarea (animar más elementos) comenzó a verse enredoso y poco mantenible; ¿cierto?.
+Y su resultado:
 
-Esto es un tema muy conocido en el un mundo de la programación, se llama Callback Hell y si esto los utilizas de manera recurrente tu código tiene grandes posibilidades de volverse una gran frustración.
+<CodeBlock lang='js' code={result2} />
 
-## Una opción más eficiente y moderna; las Promesas.
+Como ves, el programa no se detiene esperando el setTimeout. Continúa y, cuando la tarea termina, ejecuta el callback.
+
+## Callbacks: el origen del asincronismo
+
+La forma más antigua de manejar código asíncrono en JavaScript es usando callbacks: funciones que se ejecutan cuando otra tarea finaliza.
+
+export const example3 =
+`
+function obtenerDatos(callback) {
+  console.log("Consultando servidor...");
+  setTimeout(() => {
+    callback("Datos recibidos");
+  }, 1500);
+}
+
+obtenerDatos((resultado) => {
+  console.log(resultado);
+});
+`.trim()
+
+<CodeBlock lang='js' code={example3} />
+
+El problema aparece cuando necesitas encadenar muchas operaciones. El código termina lleno de funciones dentro de funciones, lo que se conoce como callback hell.
+
+## Promesas: una solución más elegante
+
+Para resolver ese caos, llegaron las promesas. Una promesa es un objeto que representa un valor que estará disponible ahora, más tarde o nunca.
+
+
+export const example4 =
+`
+function obtenerUsuario() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({ id: 1, nombre: "Allan" });
+    }, 2000);
+  });
+}
+
+obtenerUsuario()
+  .then((usuario) => {
+    console.log("Usuario:", usuario);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+`.trim()
+
+<CodeBlock lang='js' code={example4} />
+
+Gracias a then y catch el código se vuelve más ordenado y mucho más legible que con callbacks anidados.
+
+## Async / Await: sintaxis moderna y clara 
+
+Desde ES2017 tenemos async/await, una forma de escribir código asíncrono con una sintaxis que parece “síncrona”. Esto hace que sea más fácil de leer y mantener.
+
+export const example5 =
+`
+async function mostrarUsuario() {
+  try {
+    console.log("Obteniendo usuario...");
+    const usuario = await obtenerUsuario(); // espera la promesa
+    console.log("Usuario recibido:", usuario);
+  } catch (error) {
+    console.error("Hubo un error:", error);
+  }
+}
+
+mostrarUsuario();
+`.trim()
+
+<CodeBlock lang='js' code={example5} />
+
+Con await, el programa se “pausa” dentro de la función hasta que la promesa se resuelve, pero sin bloquear el hilo principal.
+
+
+### Conclusión
+
+El asincronismo puede parecer complicado al principio, pero en realidad es lo que hace que JavaScript sea tan poderoso en el desarrollo web.
+
+- Con callbacks se dio el primer paso.
+- Con promesas el código ganó claridad.
+- Y con async/await escribir funciones asíncronas se volvió mucho más natural.
+
+Si entiendes cómo y cuándo usar estas herramientas, estarás listo para trabajar con APIs, peticiones HTTP, bases de datos y cualquier tarea que requiera esperar resultados sin congelar tu aplicación.

@@ -1,0 +1,141 @@
+---
+slug: que-son-y-para-que-sirven-los-middelwares-de-nextjs
+title: ¿Qué son y para que sirven los middlewares de NextJS?
+authors:
+  - allanjuarez
+pubDate: Sep/08/2025
+category: nextjs
+cover:
+  img: src/assets/bridge.jpg
+  description: Default
+thumbnail:
+  img: src/assets/bridge.jpg
+  description: Default
+relatedArticles:
+  - asincronismo-en-javascript
+---
+
+import CodeBlock from '@components/blog/CodeBlock.astro'
+import Heading2 from '@components/blog/Heading2.astro'
+import Heading3 from '@components/blog/Heading3.astro'
+import Paragraph from '@components/blog/Paragraph.astro'
+import List from '@components/blog/List.astro'
+export const components = { h2: Heading2, h3: Heading3, p: Paragraph, ul: List }
+
+Cuando trabajamos con aplicaciones modernas, muchas veces necesitamos **interceptar las peticiones antes de que lleguen a una página o API**.  
+Por ejemplo:
+
+- Redirigir a un usuario que no está autenticado.  
+- Bloquear el acceso a ciertas rutas según el rol.  
+- Reescribir la URL hacia otra página.  
+
+En **Next.js**, esa capa de “interceptores” se maneja con los **middlewares**. Son funciones que se ejecutan *antes* de que una solicitud llegue a su destino final, dándonos la posibilidad de modificar, redirigir o rechazar la petición.  
+
+---
+
+## ¿Qué es un middleware en Next.js?
+
+Un middleware en Next.js es un archivo especial (`middleware.ts` o `middleware.js`) que vive en la raíz del proyecto o dentro de una carpeta específica de rutas.  
+Su misión es actuar **entre la petición del cliente y la respuesta del servidor**.  
+
+De manera técnica, un middleware se ejecuta en el **Edge Runtime**, lo que significa que corre en la frontera (edge) de la red, muy cerca del usuario, mejorando rendimiento y velocidad.
+
+---
+
+
+## Cómo crear un middleware
+
+Para crear un middleware en Next.js, solo necesitas un archivo llamado `middleware.ts` en la raíz del proyecto.
+
+export const example1 = 
+`ts
+// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  console.log("Middleware ejecutándose en:", request.nextUrl.pathname);
+
+  return NextResponse.next(); // Deja pasar la petición
+}`.trim()
+
+<CodeBlock lang='js' code={example1} />
+
+En este caso, el middleware no hace nada especial, solo imprime en consola y permite que la solicitud siga su curso.
+
+
+## Redirecciones con middleware
+
+Un caso muy común es redirigir a usuarios no autenticados.
+
+export const example2 = 
+`// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  const isLoggedIn = false; // Aquí iría tu lógica real
+
+  if (!isLoggedIn && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
+}`.trim()
+
+<CodeBlock lang='js' code={example2} />
+
+Con este código, protegemos la ruta /dashboard enviando al usuario a /login si no está logueado.
+
+
+## Reescrituras de URL
+
+Otra funcionalidad útil es la reescritura de URLs.
+Supongamos que tienes una página /blog/[id], pero quieres que los usuarios entren con /articulos/[id].
+
+export const example3 = 
+`// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith("/articulos")) {
+    const url = request.nextUrl.clone();
+    url.pathname = url.pathname.replace("/articulos", "/blog");
+    return NextResponse.rewrite(url);
+  }
+
+  return NextResponse.next();
+}`.trim()
+
+<CodeBlock lang='js' code={example3} />
+
+Con esto, /articulos/123 mostrará el contenido de /blog/123 sin que el usuario lo note.
+
+
+## Configuración con matcher
+
+Los middlewares pueden aplicarse a todas las rutas o solo a un subconjunto, usando matcher:
+
+export const example4 = 
+`export const config = {
+  matcher: ["/dashboard/:path*", "/perfil/:path*"],
+};`.trim()
+
+<CodeBlock lang='js' code={example4} />
+
+De esta forma, el middleware solo se ejecutará en las rutas /dashboard y /perfil.
+
+
+### Conclusión
+
+Los middlewares en Next.js son una herramienta clave cuando necesitamos lógica previa al renderizado de una página.
+Con ellos podemos:
+
+Controlar acceso según autenticación o roles.
+
+Redirigir a rutas específicas.
+
+Reescribir URLs de forma transparente.
+
+En pocas palabras, son como guardianes en la puerta de tu aplicación, y al estar construidos sobre el Edge Runtime, ofrecen un gran balance entre flexibilidad y rendimiento.
